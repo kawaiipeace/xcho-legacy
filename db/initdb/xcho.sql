@@ -18,7 +18,7 @@ SET row_security = off;
 
 -- Create database if exists
 
-CREATE DATABASE xcho;
+-- CREATE DATABASE xcho;
 
 --
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
