@@ -1,2 +1,3 @@
-# xcho
- Xcho-ระบบจัดการแบบฟอร์ม
+# XCHO Database
+
+Database ระบบจัดการแบบฟอร์ม (XCHO) โดย PostgreSQL
