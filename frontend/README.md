@@ -1,6 +1,6 @@
 # XCHO Frontend
 
-หน้า Frontend ระบบจัดการแบบฟอร์ม (XCHO) โดย Next.js
+Frontend ระบบจัดการแบบฟอร์ม (XCHO) โดย Next.js
 
 ## การติดตั้ง
 
