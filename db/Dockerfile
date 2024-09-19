@@ -8,7 +8,7 @@ ENV POSTGRES_PASSWORD 123456
 ENV POSTGRES_DB xcho
 
 RUN localedef -i th_TH -c -f UTF-8 -A /usr/share/locale/locale.alias th_TH.UTF-8
-# ENV LANG th_TH.utf8
+ENV LANG th_TH.utf8
 
 COPY ./initdb/xcho.sql /docker-entrypoint-initdb.d/
 
