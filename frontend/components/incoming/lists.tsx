@@ -1,7 +1,9 @@
+/* eslint-disable react/jsx-key */
 'use client';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import Select from 'react-select';
 import IconLayoutGrid from '@/components/icon/icon-layout-grid';
 import IconListCheck from '@/components/icon/icon-list-check';
 import { FaAngleDown, FaFileCsv, FaFilePdf, FaFileExcel, FaFileExport, FaRegFaceSadCry, FaEye, FaReply, FaPhone, FaClock, FaWpforms } from "react-icons/fa6";
@@ -58,6 +60,15 @@ const Lists = () => {
     const [value, setValue] = useState<any>('list');
     const tableRef = useRef(null);
     const { t, i18n } = getTranslation();
+
+    {/* Select จำนวนหน้า สำหรับใช้ใน Grid View */ }
+    const pageSize_select = [
+        { value: 10, label: '10'},
+        { value: 20, label: '20'},
+        { value: 30, label: '30'},
+        { value: 50, label: '50'},
+        { value: 100, label: '100'},
+    ];
 
     {/* Pagination สำหรับใช้ใน Grid View */ }
     const total = Math.ceil(rowData.length / pageSize);
@@ -378,6 +389,8 @@ const Lists = () => {
             .map((s: any) => s.charAt(0).toUpperCase() + s.substring(1))
             .join(' ');
     };
+
+    {/* RETURN Display start from here */}
     return (
         <div>
             <div className="mb-6 grid grid-cols-1 gap-6 text-white sm:grid-cols-2 lg:grid-cols-3">
@@ -581,7 +594,8 @@ const Lists = () => {
                     <>
                         <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
                             <div className="flex flex-wrap items-center">
-                                <p>จำนวนรายการต่อหน้า {pageSize}</p>
+                                <p>จำนวนรายการต่อหน้า</p>
+                                <Select className="mx-2" defaultValue={pageSize_select[0]} options={pageSize_select} isSearchable={false}/>
                             </div>
 
                             <div className='flex flex-wrap items-end'>
@@ -592,8 +606,8 @@ const Lists = () => {
                                         </div>
                                     ) :
                                         (
-                                            <div className="flex justify-center font-semibold px-3.5 py-2 mx-1 rounded transition text-dark hover:text-primary border-2 border-white-light dark:border-[#191e3a] hover:border-primary dark:hover:border-primary dark:text-white-light">
-                                                <button className={pagination.active === range ? 'active' : ''}
+                                            <div className={pagination.active === range ? 'flex justify-center mx-1 rounded border-2 border-primary px-3.5 py-2 font-semibold text-primary transition dark:border-primary dark:text-white-light' : 'flex justify-center mx-1 rounded border-2 border-white-light px-3.5 py-2 font-semibold text-dark transition hover:border-primary hover:text-primary dark:border-[#191e3a] dark:text-white-light dark:hover:border-primary'}>
+                                                <button
                                                     key={range}
                                                     onClick={() => pagination.setPage(range)}
                                                 >

@@ -17,7 +17,7 @@ import IconLogout from '@/components/icon/icon-logout';
 import { FaWpforms, FaInbox, FaFilePen } from "react-icons/fa6";
 import { usePathname, useRouter } from 'next/navigation';
 import { getTranslation } from '@/i18n';
-import { useMantineColorScheme} from '@mantine/core';
+import { useMantineColorScheme } from '@mantine/core';
 
 const Header = () => {
     const pathname = usePathname();
@@ -302,28 +302,34 @@ const Header = () => {
                 {/* horizontal menu */}
                 <ul className="horizontal-menu hidden border-t border-[#ebedf2] bg-white px-6 py-1.5 font-semibold text-black rtl:space-x-reverse dark:border-[#191e3a] dark:bg-black dark:text-white-dark lg:space-x-1.5 xl:space-x-8">
                     <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <FaInbox className="shrink-0" />
-                                <span className="px-1"><Link href="/incoming">{t('กล่องขาเข้า')}</Link></span>
-                            </div>
-                        </button>
+                        <Link href="/incoming" className="group">
+                            <button type="button" className="nav-link">
+                                <div className="flex items-center">
+                                    <FaInbox className="shrink-0 group-hover:!text-primary" />
+                                    <span className="text-black ltr:pl-2 rtl:pr-2 dark:text-[#506690] dark:group-hover:text-white-dark px-1">{t('กล่องขาเข้า')}</span>
+                                </div>
+                            </button>
+                        </Link>
                     </li>
                     <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <FaWpforms className="shrink-0" />
-                                <span className="px-1"><Link href="/myforms">{t('ฟอร์มของคุณ')}</Link></span>
-                            </div>
-                        </button>
+                        <Link href="/myforms" className="group">
+                            <button type="button" className="nav-link">
+                                <div className="flex items-center">
+                                    <FaWpforms className="shrink-0 group-hover:!text-primary" />
+                                    <span className="text-black ltr:pl-2 rtl:pr-2 dark:text-[#506690] dark:group-hover:text-white-dark px-1">{t('ฟอร์มของคุณ')}</span>
+                                </div>
+                            </button>
+                        </Link>
                     </li>
                     <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <FaFilePen className="shrink-0" />
-                                <span className="px-1"><Link href="/permission">{t('อนุมัติแบบฟอร์ม')}</Link></span>
-                            </div>
-                        </button>
+                        <Link href="/permission" className="group">
+                            <button type="button" className="nav-link">
+                                <div className="flex items-center">
+                                    <FaFilePen className="shrink-0 group-hover:!text-primary" />
+                                    <span className="text-black ltr:pl-2 rtl:pr-2 dark:text-[#506690] dark:group-hover:text-white-dark px-1">{t('อนุมัติแบบฟอร์ม')}</span>
+                                </div>
+                            </button>
+                        </Link>
                     </li>
                 </ul>
             </div>
