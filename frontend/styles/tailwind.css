@@ -1,5 +1,19 @@
-/* Animate css */
+/* Import CSS */
 @import './animate.css';
+@import './tippy.css';
+@import './swiper.css';
+@import './progressbar.css';
+@import './datatables.css';
+@import './scrumboard.css';
+@import './fullcalendar.css';
+@import './sweetalert.css';
+@import './flatpickr.css';
+@import './quill-editor.css';
+@import './markdown-editor.css';
+@import './file-upload-preview.css';
+@import './dragndrop.css';
+@import './form-elements.css';
+@import './select2.css';
 
 /* CSS customization by PEACE */
 @import './peace_custom.css';

@@ -560,7 +560,7 @@ const Lists = () => {
                                     accessor: 'Status',
                                     title: 'สถานะ',
                                     sortable: true,
-                                    render: ({ Status }) => <span className={`badge bg-outline-${colorBadgeStatus(Status)}/10 text-${colorBadgeStatus(Status)} py-1.5 dark:bg-${colorBadgeStatus(Status)} dark:text-white !important`}>{showStatus(Status)}</span>,
+                                    render: ({ Status }) => <span className={`badge bg-outline-${colorBadgeStatus(Status)}/10 rounded-full text-${colorBadgeStatus(Status)} py-1.5 dark:bg-${colorBadgeStatus(Status)} rounded-full dark:text-white !important`}>{showStatus(Status)}</span>,
                                 },
                                 {
                                     accessor: 'Action',
@@ -593,7 +593,7 @@ const Lists = () => {
                 {value === 'grid' && (
                     <>
                         <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
-                            <div className="flex flex-wrap items-center">
+                            <div className="flex flex-wrap items-center custom-select">
                                 <p>จำนวนรายการต่อหน้า</p>
                                 <Select className="mx-2" defaultValue={pageSize_select[0]} options={pageSize_select} isSearchable={false}/>
                             </div>
