@@ -1,7 +1,9 @@
+/* eslint-disable react/jsx-key */
 'use client';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import Select from 'react-select';
 import IconLayoutGrid from '@/components/icon/icon-layout-grid';
 import IconListCheck from '@/components/icon/icon-list-check';
 import { FaAngleDown, FaFileCsv, FaFilePdf, FaFileExcel, FaFileExport, FaRectangleList, FaPhone, FaClock, FaWpforms, FaQrcode, FaEye } from "react-icons/fa6";
@@ -50,6 +52,15 @@ const Lists = () => {
     const [value, setValue] = useState<any>('list');
     const tableRef = useRef(null);
     const { t, i18n } = getTranslation();
+
+    {/* Select จำนวนหน้า สำหรับใช้ใน Grid View */ }
+    const pageSize_select = [
+        { value: 10, label: '10'},
+        { value: 20, label: '20'},
+        { value: 30, label: '30'},
+        { value: 50, label: '50'},
+        { value: 100, label: '100'},
+    ];
 
     {/* Pagination สำหรับใช้ใน Grid View */ }
     const total = Math.ceil(rowData.length / pageSize);
@@ -151,26 +162,26 @@ const Lists = () => {
         return <div className="mx-auto flex w-max items-center gap-2">
             {/* ปุ่มดูหรือแก้ไข */}
             <Link href={"/myforms/result/" + id}>
-                <div className="group relative flex justify-center items-center text-green-50 text-sm font-bold">
+                <div className="group relative flex justify-center items-center text-amber-50 text-sm font-bold">
                     <div className="absolute opacity-0 group-hover:opacity-100 group-hover:-translate-y-[150%] -translate-y-[300%] duration-500 group-hover:delay-500 skew-y-[20deg] group-hover:skew-y-0 shadow-md">
                         <div className="rounded-md bg-white group-hover:opacity-0 group-hover:scale-[115%] group-hover:delay-700 duration-500 w-full h-full absolute top-0 left-0">
                             <div className="border-b border-r border-white bg-white absolute bottom-0 translate-y-1/2 left-1/2 translate-x-full rotate-45 p-1">
                             </div>
                         </div>
                     </div>
-                    <div className="shadow-md flex items-center group-hover:gap-2 bg-gradient-to-br from-green-700 to-green-600 p-3 rounded-full cursor-pointer duration-300">
+                    <div className="shadow-md flex items-center group-hover:gap-2 bg-gradient-to-br from-amber-500 to-amber-400 p-3 rounded-full cursor-pointer duration-300">
                         <svg
                             fill="none"
-                            viewBox="0 0 576 512"
+                            viewBox="0 0 512 512"
                             height="20px"
                             width="20px"
                             xmlns="http://www.w3.org/2000/svg"
-                            className="fill-green-50"
+                            className="fill-amber-50"
                         >
                             <path
                                 stroke-linejoin="round"
                                 stroke-linecap="round"
-                                d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"
+                                d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"
                             ></path>
                         </svg>
                         <span className="text-[0px] group-hover:text-sm duration-300">ดูหรือแก้ไขฟอร์ม</span>
@@ -179,17 +190,17 @@ const Lists = () => {
             </Link>
             {/* ปุ่มแสดงผลลัพธ์ (ตาราง) */}
             <Link href={"/incoming/pdf_answered/" + id}>
-                <div className="group relative flex justify-center items-center text-sky-50 text-sm font-bold">
+                <div className="group relative flex justify-center items-center text-emerald-50 text-sm font-bold">
                     <div className="absolute opacity-0 group-hover:opacity-100 group-hover:-translate-y-[150%] -translate-y-[300%] duration-500 group-hover:delay-500 skew-y-[20deg] group-hover:skew-y-0 shadow-md">
                         <div className="rounded-md bg-white group-hover:opacity-0 group-hover:scale-[115%] group-hover:delay-700 duration-500 w-full h-full absolute top-0 left-0">
                             <div className="border-b border-r border-white bg-white absolute bottom-0 translate-y-1/2 left-1/2 translate-x-full rotate-45 p-1">
                             </div>
                         </div>
                     </div>
-                    <div className="shadow-md flex items-center group-hover:gap-2 bg-gradient-to-br from-sky-700 to-sky-600 p-3 rounded-full cursor-pointer duration-300">
+                    <div className="shadow-md flex items-center group-hover:gap-2 bg-gradient-to-br from-emerald-600 to-emerald-500 p-3 rounded-full cursor-pointer duration-300">
                         <svg
                             fill="none"
-                            viewBox="0 0 512 512"
+                            viewBox="0 0 576 512"
                             height="20px"
                             width="20px"
                             xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +209,7 @@ const Lists = () => {
                             <path
                                 stroke-linejoin="round"
                                 stroke-linecap="round"
-                                d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 144-208 0c-35.3 0-64 28.7-64 64l0 144-48 0c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128zM176 352l32 0c30.9 0 56 25.1 56 56s-25.1 56-56 56l-16 0 0 32c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48 0-80c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24l-16 0 0 48 16 0zm96-80l32 0c26.5 0 48 21.5 48 48l0 64c0 26.5-21.5 48-48 48l-32 0c-8.8 0-16-7.2-16-16l0-128c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16l0-64c0-8.8-7.2-16-16-16l-16 0 0 96 16 0zm80-112c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 32 32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-64 0-64z"
+                                d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM128 288a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm32-128a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM128 384a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm96-248c-13.3 0-24 10.7-24 24s10.7 24 24 24l224 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-224 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l224 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-224 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l224 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-224 0z"
                             ></path>
                         </svg>
                         <span className="text-[0px] group-hover:text-sm duration-300">ตารางผลลัพธ์</span>
@@ -206,33 +217,51 @@ const Lists = () => {
                 </div>
             </Link>
             {/* ปุ่มดังโงะ (อื่น ๆ) */}
-            <Link href={"/incoming/pdf_answered/" + id}>
-                <div className="group relative flex justify-center items-center text-sky-50 text-sm font-bold">
-                    <div className="absolute opacity-0 group-hover:opacity-100 group-hover:-translate-y-[150%] -translate-y-[300%] duration-500 group-hover:delay-500 skew-y-[20deg] group-hover:skew-y-0 shadow-md">
-                        <div className="rounded-md bg-white group-hover:opacity-0 group-hover:scale-[115%] group-hover:delay-700 duration-500 w-full h-full absolute top-0 left-0">
-                            <div className="border-b border-r border-white bg-white absolute bottom-0 translate-y-1/2 left-1/2 translate-x-full rotate-45 p-1">
-                            </div>
-                        </div>
-                    </div>
-                    <div className="shadow-md flex items-center group-hover:gap-2 bg-gradient-to-br from-sky-700 to-sky-600 p-3 rounded-full cursor-pointer duration-300">
-                        <svg
-                            fill="none"
-                            viewBox="0 0 512 512"
-                            height="20px"
-                            width="20px"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="fill-sky-50"
-                        >
-                            <path
-                                stroke-linejoin="round"
-                                stroke-linecap="round"
-                                d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 144-208 0c-35.3 0-64 28.7-64 64l0 144-48 0c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128zM176 352l32 0c30.9 0 56 25.1 56 56s-25.1 56-56 56l-16 0 0 32c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48 0-80c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24l-16 0 0 48 16 0zm96-80l32 0c26.5 0 48 21.5 48 48l0 64c0 26.5-21.5 48-48 48l-32 0c-8.8 0-16-7.2-16-16l0-128c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16l0-64c0-8.8-7.2-16-16-16l-16 0 0 96 16 0zm80-112c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 32 32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-64 0-64z"
-                            ></path>
-                        </svg>
-                        <span className="text-[0px] group-hover:text-sm duration-300">อื่น ๆ</span>
-                    </div>
-                </div>
-            </Link>
+            <div className="flex dropdown">
+                <Dropdown
+                    btnClassName="btn btn-info w-11 h-11 p-0 rounded-full dropdown-toggle"
+                    button={
+                        <>
+                            <MdMoreHoriz className="h-7 w-7 " />
+                        </>
+                    }
+                >
+                    <ul className="!min-w-[170px]">
+                        <li>
+                            <Link className="inline-block" href={"/myforms/dashboard/" + id}>
+                                <button type="button" className="text-center inline-flex items-center">
+                                    <MdDashboard className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                                    {t('แดชบอร์ด')}
+                                </button>
+                            </Link>
+                        </li>
+                        <li>
+                            <button type="button" className="text-center inline-flex items-center">
+                                <FaEye className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                                {t('เผยแพร่')}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" className="text-center inline-flex items-center">
+                                <FaQrcode className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                                {t('ลิงก์/QR Code')}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" className="text-center inline-flex items-center">
+                                <IoDuplicateSharp className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                                {t('ทำซ้ำ')}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" className="text-danger text-center inline-flex items-center" onClick={() => exportTable('pdf')}>
+                                <MdDeleteForever className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                                {t('ลบแบบฟอร์ม')}
+                            </button>
+                        </li>
+                    </ul>
+                </Dropdown>
+            </div>
         </div>;
     };
 
@@ -479,184 +508,196 @@ const Lists = () => {
                                 &nbsp;{t('สร้างแบบฟอร์ม')}
                             </button>
                         </Link>
-                    <div className="flex dropdown m-1">
-                        <Dropdown
-                            btnClassName="btn btn-outline-primary dropdown-toggle"
-                            button={
-                                <>
-                                    <FaFileExport className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                                    {t('ส่งออก')}&nbsp;
-                                    <span>
-                                        <FaAngleDown />
-                                    </span>
-                                </>
-                            }
-                        >
-                            <ul className="!min-w-[170px]">
-                                <li>
-                                    <button type="button" onClick={() => exportTable('csv')}>
-                                        <FaFileCsv className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                                        {t('CSV')}
-                                    </button>
-                                </li>
-                                <li>
-                                    <button type="button" onClick={() => exportTable('excel')}>
-                                        <FaFileExcel className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                                        {t('Excel')}
-                                    </button>
-                                </li>
-                                <li>
-                                    <button type="button" onClick={() => exportTable('pdf')}>
-                                        <FaFilePdf className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                                        {t('PDF')}
-                                    </button>
-                                </li>
-                            </ul>
-                        </Dropdown>
-                    </div>
+                        <div className="flex dropdown m-1">
+                            <Dropdown
+                                btnClassName="btn btn-outline-primary dropdown-toggle"
+                                button={
+                                    <>
+                                        <FaFileExport className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                                        {t('ส่งออก')}&nbsp;
+                                        <span>
+                                            <FaAngleDown />
+                                        </span>
+                                    </>
+                                }
+                            >
+                                <ul className="!min-w-[170px]">
+                                    <li>
+                                        <button type="button" onClick={() => exportTable('csv')}>
+                                            <FaFileCsv className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                                            {t('CSV')}
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" onClick={() => exportTable('excel')}>
+                                            <FaFileExcel className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                                            {t('Excel')}
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" onClick={() => exportTable('pdf')}>
+                                            <FaFilePdf className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                                            {t('PDF')}
+                                        </button>
+                                    </li>
+                                </ul>
+                            </Dropdown>
+                        </div>
 
-                    <button type="button" className={`btn btn-outline-primary btn-sm m-1 p-2 ${value === 'list' && 'bg-primary text-white'}`} onClick={() => setValue('list')}>
-                        <IconListCheck />
-                    </button>
-                    <button type="button" className={`btn btn-outline-primary btn-sm m-1 p-2 ${value === 'grid' && 'bg-primary text-white'}`} onClick={() => setValue('grid')}>
-                        <IconLayoutGrid />
-                    </button>
-
-                    <div className="relative">
-                        <input type="text" className="peer form-input w-auto m-1 p-2 ltr:pr-11 rtl:pl-11" placeholder="ค้นหา..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                        <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
-                            <IconSearch className="mx-auto" />
+                        <button type="button" className={`btn btn-outline-primary btn-sm m-1 p-2 ${value === 'list' && 'bg-primary text-white'}`} onClick={() => setValue('list')}>
+                            <IconListCheck />
                         </button>
+                        <button type="button" className={`btn btn-outline-primary btn-sm m-1 p-2 ${value === 'grid' && 'bg-primary text-white'}`} onClick={() => setValue('grid')}>
+                            <IconLayoutGrid />
+                        </button>
+
+                        <div className="relative">
+                            <input type="text" className="peer form-input w-auto m-1 p-2 ltr:pr-11 rtl:pl-11" placeholder="ค้นหา..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                            <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
+                                <IconSearch className="mx-auto" />
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {value === 'list' && (
-                <div className="datatables">
-                    <DataTable
-                        tableRef={tableRef}
-                        highlightOnHover
-                        striped
-                        noRecordsText="ไม่พบข้อมูล"
-                        className="table-hover whitespace-nowrap"
-                        textSelectionDisabled={isTouch}
-                        records={recordsData}
-                        onRowContextMenu={({ event }) =>
-                            showContextMenu([])(event)}
-                        columns={[
-                            { accessor: 'Survey_Title', title: 'ชื่อหัวข้อ', sortable: true },
-                            { accessor: 'Sector_Creator', title: 'หน่วยงานผู้สร้าง', sortable: true },
-                            { accessor: 'Tel', title: 'เบอร์โทรศัพท์', sortable: true },
-                            {
-                                accessor: 'Expire_Date',
-                                title: 'วันหมดอายุ',
-                                sortable: true,
-                                render: ({ Expire_Date }) => <div>{formatDate(Expire_Date)}</div>,
-                            },
-                            {
-                                accessor: 'Status',
-                                title: 'สถานะ',
-                                sortable: true,
-                                render: ({ Status }) => <span className={`badge bg-${colorBadgeStatus(Status)}/10 text-${colorBadgeStatus(Status)} py-1.5 dark:bg-${colorBadgeStatus(Status)} dark:text-white`}>{showStatus(Status)}</span>,
-                            },
-                            {
-                                accessor: 'Action',
-                                title: 'ดำเนินการ',
-                                titleClassName: '!text-center',
-                                render: ({ id, Status }) => (
-                                    <div>
-                                        {actionStatusList(id, Status)}
+                {value === 'list' && (
+                    <div className="datatables">
+                        <DataTable
+                            tableRef={tableRef}
+                            highlightOnHover
+                            striped
+                            noRecordsText="ไม่พบข้อมูล"
+                            className="table-hover whitespace-nowrap"
+                            textSelectionDisabled={isTouch}
+                            records={recordsData}
+                            onRowContextMenu={({ event }) =>
+                                showContextMenu([])(event)}
+                            columns={[
+                                { accessor: 'Survey_Title', title: 'ชื่อหัวข้อ', sortable: true },
+                                { accessor: 'Sector_Creator', title: 'หน่วยงานผู้สร้าง', sortable: true },
+                                { accessor: 'Tel', title: 'เบอร์โทรศัพท์', sortable: true },
+                                {
+                                    accessor: 'Expire_Date',
+                                    title: 'วันหมดอายุ',
+                                    sortable: true,
+                                    render: ({ Expire_Date }) => <div>{formatDate(Expire_Date)}</div>,
+                                },
+                                {
+                                    accessor: 'Status',
+                                    title: 'สถานะ',
+                                    sortable: true,
+                                    render: ({ Status }) => <span className={`badge bg-${colorBadgeStatus(Status)}/10 text-${colorBadgeStatus(Status)} py-1.5 dark:bg-${colorBadgeStatus(Status)} dark:text-white`}>{showStatus(Status)}</span>,
+                                },
+                                {
+                                    accessor: 'Action',
+                                    title: 'ดำเนินการ',
+                                    titleClassName: '!text-center',
+                                    render: ({ id, Status }) => (
+                                        <div>
+                                            {actionStatusList(id, Status)}
+                                        </div>
+                                    ),
+                                },
+                            ]}
+                            totalRecords={initialRecords.length}
+                            recordsPerPage={pageSize}
+                            recordsPerPageLabel={`จำนวนรายการต่อหน้า`}
+                            page={page}
+                            onPageChange={(p) => setPage(p)}
+                            recordsPerPageOptions={PAGE_SIZES}
+                            onRecordsPerPageChange={setPageSize}
+                            sortStatus={sortStatus}
+                            onSortStatusChange={setSortStatus}
+                            minHeight={200}
+                            paginationText={({ from, to, totalRecords }) => `แสดงจาก  ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`}
+                            paginationActiveBackgroundColor="grape"
+                            loadingText="กำลังโหลด ใจเย็น ๆ..."
+                        />
+                    </div>
+                )}
+
+                {value === 'grid' && (
+                    <>
+                    <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
+                        <div className="flex flex-wrap items-center custom-select">
+                            <p>จำนวนรายการต่อหน้า</p>
+                            <Select className="mx-2" defaultValue={pageSize_select[0]} options={pageSize_select} isSearchable={false}/>
+                        </div>
+
+                        <div className='flex flex-wrap items-end'>
+                            {pagination.range.map((range) =>
+                                range === 'dots' ? (
+                                    <div className="flex justify-center font-semibold px-3.5 py-2 rounded transition text-dark hover:text-primary border-2 border-white-light dark:border-[#191e3a] hover:border-primary dark:hover:border-primary dark:text-white-light">
+                                        <button key={range}>...</button>
                                     </div>
-                                ),
-                            },
-                        ]}
-                        totalRecords={initialRecords.length}
-                        recordsPerPage={pageSize}
-                        recordsPerPageLabel={`จำนวนรายการต่อหน้า`}
-                        page={page}
-                        onPageChange={(p) => setPage(p)}
-                        recordsPerPageOptions={PAGE_SIZES}
-                        onRecordsPerPageChange={setPageSize}
-                        sortStatus={sortStatus}
-                        onSortStatusChange={setSortStatus}
-                        minHeight={200}
-                        paginationText={({ from, to, totalRecords }) => `แสดงจาก  ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`}
-                        paginationActiveBackgroundColor="grape"
-                        loadingText="กำลังโหลด ใจเย็น ๆ..."
-                    />
-                </div>
-            )}
-
-            {value === 'grid' && (
-                <>
-                    <div className="inline-flex items-center space-x-1 rtl:space-x-reverse m-auto mb-4">
-                        {pagination.range.map((range) =>
-                            range === 'dots' ? (<button key={range}>...</button>) :
-                                (
-                                    <button className={pagination.active === range ? 'active' : ''}
-                                        key={range}
-                                        onClick={() => pagination.setPage(range)}
-                                    >
-                                        {range}
-                                    </button>
-                                )
-                        )}
-                        <p>จำนวนรายการต่อหน้า {pageSize}</p>
+                                ) :
+                                    (
+                                        <div className={pagination.active === range ? 'flex justify-center mx-1 rounded border-2 border-primary px-3.5 py-2 font-semibold text-primary transition dark:border-primary dark:text-white-light' : 'flex justify-center mx-1 rounded border-2 border-white-light px-3.5 py-2 font-semibold text-dark transition hover:border-primary hover:text-primary dark:border-[#191e3a] dark:text-white-light dark:hover:border-primary'}>
+                                            <button
+                                                key={range}
+                                                onClick={() => pagination.setPage(range)}
+                                            >
+                                                {range}
+                                            </button>
+                                        </div>
+                                    )
+                            )}
+                        </div>
                     </div>
-                    <div className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
-                        {recordsData.map((item: any) => {
-                            return (
-                                <div className="mb-5 flex items-center justify-center" key={item.id}>
-                                    <div className="w-full max-w-[22rem] rounded border border-white-light bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none">
-                                        <div className="px-6 py-7">
-                                            <div className="-mx-6 -mt-7 mb-7 h-[260px] overflow-hidden rounded-tl rounded-tr">
-                                                <Image
-                                                    src="/assets/images/survey-bg.jpg"
-                                                    alt="default"
-                                                    width={500}
-                                                    height={500}
-                                                    className="h-full w-full object-cover"
-                                                />
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <h4 className="text-black font-semibold text-base dark:text-white-light">{item.Survey_Title}</h4>
-                                                <span className={`badge bg-${colorBadgeStatus(item.Status)}/10 text-${colorBadgeStatus(item.Status)} py-1.5 dark:bg-${colorBadgeStatus(item.Status)} dark:text-white`}>{item.Status}</span>
-                                            </div>
-                                            <div className="flex font-semibold mb-5">
-                                                <div className="flex text-primary ltr:mr-3 rtl:ml-3">
-                                                    <p className="flex mb-1.5 text-xs font-bold text-primary ">
-                                                        <FaClock className="h-3 w-3 ltr:mr-2 rtl:ml-2" />
-                                                        {formatDate(item.Expire_Date)}
-                                                    </p>
+                        <div className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
+                            {recordsData.map((item: any) => {
+                                return (
+                                    <div className="mb-5 flex items-center justify-center" key={item.id}>
+                                        <div className="w-full max-w-[22rem] rounded border border-white-light bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none">
+                                            <div className="px-6 py-7">
+                                                <div className="-mx-6 -mt-7 mb-7 h-[260px] overflow-hidden rounded-tl rounded-tr">
+                                                    <Image
+                                                        src="/assets/images/survey-bg.jpg"
+                                                        alt="default"
+                                                        width={500}
+                                                        height={500}
+                                                        className="h-full w-full object-cover"
+                                                    />
                                                 </div>
-                                            </div>
-                                            <div>
-                                                {actionStatusGrid(item.id, item.Status)}
-                                            </div>
-                                            <div className="relative mt-6 flex justify-between pt-4 before:absolute before:inset-x-0 before:top-0 before:mx-auto before:h-[1px] before:w-[250px] before:bg-white-light dark:before:bg-[#1b2e4b]">
-                                                <div className="flex items-center font-semibold">
-                                                    <div className="inline-block h-9 w-9 shrink-0 overflow-hidden rounded-full ltr:mr-2 rtl:ml-2.5">
-                                                        <span className="flex h-full w-full items-center justify-center bg-[#362867] text-white-light">XC</span>
+                                                <div className="flex justify-between">
+                                                    <h4 className="text-black font-semibold text-base dark:text-white-light">{item.Survey_Title}</h4>
+                                                    <span className={`badge bg-${colorBadgeStatus(item.Status)}/10 text-${colorBadgeStatus(item.Status)} py-1.5 dark:bg-${colorBadgeStatus(item.Status)} dark:text-white`}>{item.Status}</span>
+                                                </div>
+                                                <div className="flex font-semibold mb-5">
+                                                    <div className="flex text-primary ltr:mr-3 rtl:ml-3">
+                                                        <p className="flex mb-1.5 text-xs font-bold text-primary ">
+                                                            <FaClock className="h-3 w-3 ltr:mr-2 rtl:ml-2" />
+                                                            {formatDate(item.Expire_Date)}
+                                                        </p>
                                                     </div>
-                                                    <div className="text-[#362867] dark:text-white-dark">{item.Sector_Creator}</div>
                                                 </div>
-                                                <div className="flex font-semibold">
-                                                    <div className="flex items-center text-primary ltr:mr-3 rtl:ml-3">
-                                                        <FaPhone className="h-4 w-4 ltr:mr-1 rtl:ml-1" />
-                                                        {item.Tel}
+                                                <div>
+                                                    {actionStatusGrid(item.id, item.Status)}
+                                                </div>
+                                                <div className="relative mt-6 flex justify-between pt-4 before:absolute before:inset-x-0 before:top-0 before:mx-auto before:h-[1px] before:w-[250px] before:bg-white-light dark:before:bg-[#1b2e4b]">
+                                                    <div className="flex items-center font-semibold">
+                                                        <div className="inline-block h-9 w-9 shrink-0 overflow-hidden rounded-full ltr:mr-2 rtl:ml-2.5">
+                                                            <span className="flex h-full w-full items-center justify-center bg-[#362867] text-white-light">XC</span>
+                                                        </div>
+                                                        <div className="text-[#362867] dark:text-white-dark">{item.Sector_Creator}</div>
+                                                    </div>
+                                                    <div className="flex font-semibold">
+                                                        <div className="flex items-center text-primary ltr:mr-3 rtl:ml-3">
+                                                            <FaPhone className="h-4 w-4 ltr:mr-1 rtl:ml-1" />
+                                                            {item.Tel}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </>
+                                );
+                            })}
+                        </div>
+                    </>
 
-            )}
-        </div>
+                )}
+            </div>
         </div >
     );
 };

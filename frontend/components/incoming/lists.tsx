@@ -83,13 +83,15 @@ const Lists = () => {
         },
     });
 
-    const colorBadgeStatus = (Status: any) => {
-        if (Status === 'ยังไม่ตอบ') {
-            return 'info';
-        } else if (Status === 'ตอบแล้ว') {
-            return 'success';
-        } else if (Status === 'สิ้นสุดแล้ว') {
-            return 'danger';
+    const colorBadgeStatus = (Status: unknown) => {
+        if (typeof Status === 'string') {
+            if (Status === 'ยังไม่ตอบ') {
+                return 'info';
+            } else if (Status === 'ตอบแล้ว') {
+                return 'success';
+            } else if (Status === 'สิ้นสุดแล้ว') {
+                return 'danger';
+            }
         }
         return '';
     };
