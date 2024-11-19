@@ -1,5 +1,5 @@
 {
-    "name": "xcho",
+    "name": "xcho-frontend",
     "version": "0.1",
     "private": true,
     "scripts": {
@@ -48,7 +48,7 @@
         "survey-pdf": "^1.11.14",
         "survey-react-ui": "^1.11.14",
         "typescript": "4.9.4",
-        "universal-cookie": "^6.1.1",
+        "universal-cookie": "^7.2.2",
         "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
         "yup": "^0.32.11"
     },
