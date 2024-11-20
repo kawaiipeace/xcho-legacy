@@ -38,7 +38,6 @@ export const getTranslation = () => {
             cookies.set('i18nextLng', lang);
         },
     };
-    console.log(cookieObj);
 
     return { t, i18n, initLocale };
 };
