@@ -7,7 +7,8 @@ const langObj: any = { en, th };
 const getLang = () => {
     let lang = null;
     if (typeof window !== 'undefined') {
-        const cookies = new cookieObj.default(null, { path: '/' });
+        //const cookies = new cookieObj.default(null, { path: '/' });
+        const cookies = new cookieObj();
         lang = cookies.get('i18nextLng');
     } else {
         const cookies = cookieObj.cookies();
@@ -32,10 +33,12 @@ export const getTranslation = () => {
     const i18n = {
         language: lang,
         changeLanguage: (lang: string) => {
-            const cookies = new cookieObj.default(null, { path: '/' });
+            //const cookies = new cookieObj.default(null, { path: '/' });
+            const cookies = new cookieObj();
             cookies.set('i18nextLng', lang);
         },
     };
+    console.log(cookieObj);
 
     return { t, i18n, initLocale };
 };
