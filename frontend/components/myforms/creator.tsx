@@ -1,12 +1,9 @@
 'use client';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState, useRef, Fragment } from 'react';
-import { useSelector } from 'react-redux';
-import IconLayoutGrid from '@/components/icon/icon-layout-grid';
-import IconListCheck from '@/components/icon/icon-list-check';
-import { FaRegTrashCan, FaQrcode, FaEye } from "react-icons/fa6";
+import { useDispatch, useSelector } from 'react-redux';
+import { FaRegTrashCan, FaQrcode, FaEye, FaUserPlus, FaWpforms, FaShareFromSquare, FaRegShareFromSquare, FaBullseye, FaLocationCrosshairs, FaXmark } from "react-icons/fa6";
 import { IRootState } from '@/store';
-import { FaEdit } from "react-icons/fa";
 import { IoDuplicateSharp } from "react-icons/io5";
 import { MdMoreHoriz, MdDashboard, MdAddBox, MdDeleteForever } from "react-icons/md";
 import { getTranslation } from '@/i18n';
@@ -37,21 +34,31 @@ import 'mantine-datatable/styles.layer.css';
 import 'mantine-contextmenu/styles.layer.css';
 import 'moment/locale/th';
 import 'tippy.js/dist/tippy.css';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/flatpickr.css';
 
 import IconSearch from '@/components/icon/icon-search';
 
-import { ICreatorOptions, editorLocalization } from "survey-creator-core";
+import { ICreatorOptions, editorLocalization, DefaultFonts } from "survey-creator-core";
 import { SurveyCreatorComponent, SurveyCreator } from "survey-creator-react";
-import "survey-creator-core/i18n/thai";
+// import "survey-creator-core/i18n/thai";
 
 moment.locale('th');
 const rowData = survey_record;
-const col = ['id', 'Target_ID', 'Target_Name', 'Target_Sector'];
+const col = ['id', 'Target_ID', 'Target_Name', 'Target_Position', 'Target_Sector'];
 const itemsPerPage = 3; // สำหรับ Pagination แบบ Grid View
-editorLocalization.currentLocale = "th";
+// editorLocalization.currentLocale = "th";
+
+DefaultFonts.push(
+    "IBM_plex, monospace"
+);
 
 const defaultCreatorOptions: ICreatorOptions = {
+    showDesignerTab: true,
+    showTestSurveyTab: true,
     showLogicTab: true,
+    showTranslationTab: false,
+    showJSONEditorTab: false,
     showThemeTab: true
 };
 
@@ -71,6 +78,14 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
     const [value, setValue] = useState<any>('list');
     const tableRef = useRef(null);
     const { t, i18n } = getTranslation();
+    const dispatch = useDispatch();
+    const [start_publish, set_start_publish] = useState<any>('today');
+    const [end_publish, set_end_publish] = useState<any>('today');
+    const [isAlertVisible, setIsAlertVisible] = useState(true);
+
+    const handleCloseAlert = () => {
+        setIsAlertVisible(false);
+    };
 
     {/* Select จำนวนหน้า สำหรับใช้ใน Grid View */ }
     const pageSize_select = [
@@ -119,7 +134,7 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                         <FaRegTrashCan className="h-4 w-4 " />
                     </Link>
                 </button>
-            </Tippy>            
+            </Tippy>
         </div>;
     };
 
@@ -253,6 +268,7 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                     // item.id.toString().includes(search.toLowerCase()) ||
                     item.Target_ID.toLowerCase().includes(search.toLowerCase()) ||
                     item.Target_Name.toLowerCase().includes(search.toLowerCase()) ||
+                    item.Target_Position.toLowerCase().includes(search.toLowerCase()) ||
                     item.Target_Sector.toLowerCase().includes(search.toLowerCase())
                 );
             });
@@ -377,16 +393,26 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
         </div>
         */
         <div className="mb-5">
+            {isAlertVisible && (
+                <div className="flex items-center p-3.5 rounded text-info bg-info-light dark:bg-info-dark-light">
+                    <span className="ltr:pr-2 rtl:pl-2">
+                        <strong className="ltr:mr-1 rtl:ml-1">ระบบจะบันทึกร่างให้อัตโนมัติ</strong>วางใจได้
+                    </span>
+                    <button type="button" className="ltr:ml-auto rtl:mr-auto hover:opacity-80" onClick={handleCloseAlert}>
+                        <FaXmark className="h-4 w-4" />
+                    </button>
+                </div>
+            )}
             {isMounted && (
                 <Tab.Group>
                     <Tab.List className="mb-5 mt-3 grid grid-cols-4 gap-2 rtl:space-x-reverse sm:flex sm:flex-wrap sm:justify-start sm:space-x-3">
                         <Tab as={Fragment}>
                             {({ selected }) => (
                                 <button
-                                    className={`${selected ? '!bg-success text-white !outline-none' : ''}
-                                                    flex flex-col items-center justify-center rounded-lg bg-[#f1f2f3] p-7 py-3 hover:!bg-success hover:text-white hover:shadow-[0_5px_15px_0_rgba(0,0,0,0.30)] dark:bg-[#191e3a]`}
+                                    className={`${selected ? '!bg-primary text-white !outline-none' : ''}
+                                                    flex flex-col items-center justify-center rounded-lg bg-[#f1f2f3] p-7 py-3 hover:!bg-primary hover:text-white hover:shadow-[0_5px_15px_0_rgba(0,0,0,0.30)] dark:bg-[#191e3a]`}
                                 >
-                                    <IconHome className="mb-1" />
+                                    <FaWpforms className="mb-1 h-5 w-5" />
                                     แบบสำรวจ
                                 </button>
                             )}
@@ -394,10 +420,10 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                         <Tab as={Fragment}>
                             {({ selected }) => (
                                 <button
-                                    className={`${selected ? '!bg-success text-white !outline-none' : ''}
-                                                    flex flex-col items-center justify-center rounded-lg bg-[#f1f2f3] p-7 py-3 hover:!bg-success hover:text-white hover:shadow-[0_5px_15px_0_rgba(0,0,0,0.30)] dark:bg-[#191e3a]`}
+                                    className={`${selected ? '!bg-primary text-white !outline-none' : ''}
+                                                    flex flex-col items-center justify-center rounded-lg bg-[#f1f2f3] p-7 py-3 hover:!bg-primary hover:text-white hover:shadow-[0_5px_15px_0_rgba(0,0,0,0.30)] dark:bg-[#191e3a]`}
                                 >
-                                    <IconSettings className="mb-1 h-5 w-5" />
+                                    <FaLocationCrosshairs className="mb-1 h-5 w-5" />
                                     กลุ่มเป้าหมาย
                                 </button>
                             )}
@@ -405,10 +431,10 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                         <Tab as={Fragment}>
                             {({ selected }) => (
                                 <button
-                                    className={`${selected ? '!bg-success text-white !outline-none' : ''}
-                                                    flex flex-col items-center justify-center rounded-lg bg-[#f1f2f3] p-7 py-3 hover:!bg-success hover:text-white hover:shadow-[0_5px_15px_0_rgba(0,0,0,0.30)] dark:bg-[#191e3a]`}
+                                    className={`${selected ? '!bg-primary text-white !outline-none' : ''}
+                                                    flex flex-col items-center justify-center rounded-lg bg-[#f1f2f3] p-7 py-3 hover:!bg-primary hover:text-white hover:shadow-[0_5px_15px_0_rgba(0,0,0,0.30)] dark:bg-[#191e3a]`}
                                 >
-                                    <IconSettings className="mb-1 h-5 w-5" />
+                                    <FaRegShareFromSquare className="mb-1 h-5 w-5" />
                                     การเผยแพร่
                                 </button>
                             )}
@@ -424,16 +450,16 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                             <div className="panel mt-6">
                                 <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
                                     <div className="flex flex-wrap items-center">
-                                        <h2 className="text-xl">{t('ฟอร์มของคุณ')}</h2>
+                                        <h2 className="text-xl">{t('กลุ่มเป้าหมาย')}</h2>
                                     </div>
 
                                     <div className='flex flex-wrap items-end'>
-                                        <Link href={"/myforms/creator"} >
+                                        <Link href={"#"} >
                                             <button type="button" className="btn btn-primary m-1 p-2">
                                                 <span>
-                                                    <MdAddBox className="h-5 w-5 ltr:mr-1 rtl:ml-1" />
+                                                    <FaUserPlus className="h-5 w-5 ltr:mr-1 rtl:ml-1" />
                                                 </span>
-                                                &nbsp;{t('สร้างแบบฟอร์ม')}
+                                                &nbsp;{t('เพิ่มเป้าหมาย')}
                                             </button>
                                         </Link>
 
@@ -459,7 +485,8 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                         columns={[
                                             { accessor: 'Target_ID', title: 'รหัสพนักงาน', sortable: true },
                                             { accessor: 'Target_Name', title: 'ชื่อ-นามสกุล', sortable: true },
-                                            { accessor: 'Target_Sector', title: 'หน่วยงานผู้สร้าง', sortable: true },
+                                            { accessor: 'Target_Position', title: 'ตำแหน่ง', sortable: true },
+                                            { accessor: 'Target_Sector', title: 'สังกัด', sortable: true },
                                             {
                                                 accessor: 'Action',
                                                 title: 'ดำเนินการ',
@@ -486,6 +513,55 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                         loadingText="กำลังโหลด ใจเย็น ๆ..."
                                     />
                                 </div>
+                            </div>
+                        </Tab.Panel>
+                        <Tab.Panel>
+                            <div>
+                                <form className="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-black">
+                                    <h6 className="mb-5 text-lg">ช่วงวันและเวลาในการเผยแพร่</h6>
+                                    <div className="flex flex-col sm:flex-row">
+                                        <div className="grid flex-1 grid-cols-1 gap-5 sm:grid-cols-2">
+                                            <div>
+                                                <label htmlFor="start_publish">วันและเวลาที่เริ่มต้น</label>
+                                                <Flatpickr
+                                                    data-enable-time
+                                                    options={{
+                                                        enableTime: true,
+                                                        time_24hr: true,
+                                                        dateFormat: 'd-m-Y H:i',
+                                                    }}
+                                                    value={start_publish}
+                                                    className="form-input"
+                                                    onChange={(start_publish) => set_start_publish(start_publish)}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="end_publish">วันและเวลาที่สิ้นสุด</label>
+                                                <Flatpickr
+                                                    data-enable-time
+                                                    options={{
+                                                        enableTime: true,
+                                                        time_24hr: true,
+                                                        dateFormat: 'd-m-Y H:i',
+                                                    }}
+                                                    value={end_publish}
+                                                    className="form-input"
+                                                    onChange={(end_publish) => set_end_publish(end_publish)}
+                                                />
+                                            </div>
+                                            <div className="mt-3 sm:col-span-2">
+                                                <button type="button" className="btn btn-primary">
+                                                    Save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form className="rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-black">
+                                    <h6 className="mb-5 text-lg font-bold">Social</h6>
+                                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                                    </div>
+                                </form>
                             </div>
                         </Tab.Panel>
                     </Tab.Panels>

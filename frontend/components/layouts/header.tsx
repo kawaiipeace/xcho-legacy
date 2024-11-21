@@ -54,6 +54,13 @@ const Header = () => {
         }
     }, [pathname]);
 
+    // Track the active menu item
+    const [activeMenu, setActiveMenu] = useState<string>(pathname);
+
+    const handleMenuClick = (menu: string) => {
+        setActiveMenu(menu); // Set the clicked menu as active
+    };
+
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl';
 
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
@@ -302,8 +309,12 @@ const Header = () => {
                 {/* horizontal menu */}
                 <ul className="horizontal-menu hidden border-t border-[#ebedf2] bg-white px-6 py-1.5 font-semibold text-black rtl:space-x-reverse dark:border-[#191e3a] dark:bg-black dark:text-white-dark lg:space-x-1.5 xl:space-x-8">
                     <li className="menu nav-item relative">
-                        <Link href="/incoming" className="group">
-                            <button type="button" className="nav-link">
+                        <Link href="/incoming">
+                            <button
+                                type="button"
+                                className={`nav-link ${activeMenu === '/incoming' ? 'bg-gray-200 dark:bg-gray-800' : ''}`}
+                                onClick={() => handleMenuClick('/incoming')}
+                            >
                                 <div className="flex items-center">
                                     <FaInbox className="shrink-0 group-hover:!text-primary" />
                                     <span className="text-black ltr:pl-2 rtl:pr-2 dark:text-[#506690] dark:group-hover:text-white-dark px-1">{t('กล่องขาเข้า')}</span>
@@ -312,8 +323,12 @@ const Header = () => {
                         </Link>
                     </li>
                     <li className="menu nav-item relative">
-                        <Link href="/myforms" className="group">
-                            <button type="button" className="nav-link">
+                        <Link href="/myforms">
+                            <button
+                                type="button"
+                                className={`nav-link ${activeMenu === '/myforms' ? 'bg-gray-200 dark:bg-gray-800' : ''}`}
+                                onClick={() => handleMenuClick('/myforms')}
+                            >
                                 <div className="flex items-center">
                                     <FaWpforms className="shrink-0 group-hover:!text-primary" />
                                     <span className="text-black ltr:pl-2 rtl:pr-2 dark:text-[#506690] dark:group-hover:text-white-dark px-1">{t('ฟอร์มของคุณ')}</span>
@@ -321,9 +336,14 @@ const Header = () => {
                             </button>
                         </Link>
                     </li>
+                    { /* 
                     <li className="menu nav-item relative">
-                        <Link href="/permission" className="group">
-                            <button type="button" className="nav-link">
+                        <Link href="/permission">
+                            <button
+                                type="button"
+                                className={`nav-link ${activeMenu === '/permission' ? 'bg-gray-200 dark:bg-gray-800' : ''}`}
+                                onClick={() => handleMenuClick('/permission')}
+                            >
                                 <div className="flex items-center">
                                     <FaFilePen className="shrink-0 group-hover:!text-primary" />
                                     <span className="text-black ltr:pl-2 rtl:pr-2 dark:text-[#506690] dark:group-hover:text-white-dark px-1">{t('อนุมัติแบบฟอร์ม')}</span>
@@ -331,6 +351,7 @@ const Header = () => {
                             </button>
                         </Link>
                     </li>
+                    */ }
                 </ul>
             </div>
         </header>

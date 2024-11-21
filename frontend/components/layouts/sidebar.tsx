@@ -97,6 +97,7 @@ const Sidebar = () => {
                                     </div>
                                 </Link>
                             </li>
+                            {/*
                             <li className="menu nav-item">
                                 <Link href="/permission" className="group">
                                     <div className="flex items-center">
@@ -105,6 +106,7 @@ const Sidebar = () => {
                                     </div>
                                 </Link>
                             </li>
+                            */}
                         </ul>
 
                     </PerfectScrollbar>
