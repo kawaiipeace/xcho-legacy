@@ -40,17 +40,18 @@ import 'tippy.js/dist/tippy.css';
 
 import IconSearch from '@/components/icon/icon-search';
 
-import { ICreatorOptions } from "survey-creator-core";
+import { ICreatorOptions, editorLocalization } from "survey-creator-core";
 import { SurveyCreatorComponent, SurveyCreator } from "survey-creator-react";
+import "survey-creator-core/i18n/thai";
 
 moment.locale('th');
 const rowData = survey_record;
 const col = ['id', 'Survey_Title', 'Sector_Creator', 'Tel', 'Expire_Date', 'Status'];
 const itemsPerPage = 3; // สำหรับ Pagination แบบ Grid View
+editorLocalization.currentLocale = "th";
 
 const defaultCreatorOptions: ICreatorOptions = {
     showLogicTab: true,
-    showTranslationTab: true,
     showThemeTab: true
 };
 
@@ -476,7 +477,7 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                             </div>
                         </Tab.Panel>
                         <Tab.Panel>
-                            <div className="rounded-br-md rounded-tr-md border border-l-2 border-white-light !border-l-primary bg-white p-5 text-black shadow-md ltr:pl-3.5 rtl:pr-3.5 dark:border-[#060818] dark:bg-[#060818]">
+                            <div className="panel mt-6">
                                 <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
                                     <div className="flex flex-wrap items-center">
                                         <h2 className="text-xl">{t('ฟอร์มของคุณ')}</h2>
