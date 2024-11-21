@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import IconLayoutGrid from '@/components/icon/icon-layout-grid';
 import IconListCheck from '@/components/icon/icon-list-check';
-import { FaAngleDown, FaFileCsv, FaFilePdf, FaFileExcel, FaFileExport, FaRectangleList, FaPhone, FaClock, FaWpforms, FaQrcode, FaEye } from "react-icons/fa6";
+import { FaRegTrashCan, FaQrcode, FaEye } from "react-icons/fa6";
 import { IRootState } from '@/store';
 import { FaEdit } from "react-icons/fa";
 import { IoDuplicateSharp } from "react-icons/io5";
@@ -15,7 +15,7 @@ import { useMediaQuery, usePagination } from '@mantine/hooks';
 import sortBy from 'lodash/sortBy';
 import Dropdown from '@/components/dropdown';
 import moment from 'moment';
-import survey_record from '@/public/assets/surveydummy.json';
+import survey_record from '@/public/assets/employeedummy.json';
 import Tippy from '@tippyjs/react';
 import Link from 'next/link';
 import { Tab } from '@headlessui/react';
@@ -46,7 +46,7 @@ import "survey-creator-core/i18n/thai";
 
 moment.locale('th');
 const rowData = survey_record;
-const col = ['id', 'Survey_Title', 'Sector_Creator', 'Tel', 'Expire_Date', 'Status'];
+const col = ['id', 'Target_ID', 'Target_Name', 'Target_Sector'];
 const itemsPerPage = 3; // สำหรับ Pagination แบบ Grid View
 editorLocalization.currentLocale = "th";
 
@@ -113,67 +113,13 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
 
     const actionStatusList = (id: any, Status: any) => {
         return <div className="mx-auto flex w-max items-center gap-2">
-            <Tippy trigger="mouseenter focus" content='ดูหรือแก้ไขฟอร์ม'>
-                <button type="button" data-trigger="mouseenter" className="btn btn-outline-warning w-8 h-8 p-0 rounded-full">
+            <Tippy trigger="mouseenter focus" content='ลบรายการ'>
+                <button type="button" data-trigger="mouseenter" className="btn btn-outline-danger w-8 h-8 p-0 rounded-full">
                     <Link href={"/myforms/manage/" + id}>
-                        <FaEdit className="h-4 w-4 " />
+                        <FaRegTrashCan className="h-4 w-4 " />
                     </Link>
                 </button>
-            </Tippy>
-            <Tippy trigger="mouseenter focus" content="ตารางผลลัพธ์">
-                <button type="button" data-trigger="mouseenter" className="btn btn-outline-success w-8 h-8 p-0 rounded-full">
-                    <Link href={"/myforms/result/" + id}>
-                        <FaRectangleList className="h-4 w-4 " />
-                    </Link>
-                </button>
-            </Tippy>
-            <Tippy trigger="mouseenter focus" content="อื่น ๆ">
-                <div className="flex dropdown">
-                    <Dropdown
-                        btnClassName="btn btn-outline-info w-8 h-8 p-0 rounded-full dropdown-toggle"
-                        button={
-                            <>
-                                <MdMoreHoriz className="h-4 w-4 " />
-                            </>
-                        }
-                    >
-                        <ul className="!min-w-[170px]">
-                            <li>
-                                <Link className="inline-block" href={"/myforms/dashboard/" + id}>
-                                    <button type="button" className="text-center inline-flex items-center">
-                                        <MdDashboard className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                                        {t('แดชบอร์ด')}
-                                    </button>
-                                </Link>
-                            </li>
-                            <li>
-                                <button type="button" className="text-center inline-flex items-center">
-                                    <FaEye className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                                    {t('เผยแพร่')}
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" className="text-center inline-flex items-center">
-                                    <FaQrcode className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                                    {t('ลิงก์/QR Code')}
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" className="text-center inline-flex items-center">
-                                    <IoDuplicateSharp className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                                    {t('ทำซ้ำ')}
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" className="text-danger text-center inline-flex items-center" onClick={() => exportTable('pdf')}>
-                                    <MdDeleteForever className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                                    {t('ลบแบบฟอร์ม')}
-                                </button>
-                            </li>
-                        </ul>
-                    </Dropdown>
-                </div>
-            </Tippy>
+            </Tippy>            
         </div>;
     };
 
@@ -305,11 +251,9 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
             return rowData.filter((item: any) => {
                 return (
                     // item.id.toString().includes(search.toLowerCase()) ||
-                    item.Survey_Title.toLowerCase().includes(search.toLowerCase()) ||
-                    item.Sector_Creator.toLowerCase().includes(search.toLowerCase()) ||
-                    item.Tel.toString().toLowerCase().includes(search.toLowerCase()) ||
-                    item.Expire_Date.toLowerCase().includes(search.toLowerCase()) ||
-                    item.Status.toString().toLowerCase().includes(search.toLowerCase())
+                    item.Target_ID.toLowerCase().includes(search.toLowerCase()) ||
+                    item.Target_Name.toLowerCase().includes(search.toLowerCase()) ||
+                    item.Target_Sector.toLowerCase().includes(search.toLowerCase())
                 );
             });
         });
@@ -513,21 +457,9 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                         onRowContextMenu={({ event }) =>
                                             showContextMenu([])(event)}
                                         columns={[
-                                            { accessor: 'Survey_Title', title: 'ชื่อหัวข้อ', sortable: true },
-                                            { accessor: 'Sector_Creator', title: 'หน่วยงานผู้สร้าง', sortable: true },
-                                            { accessor: 'Tel', title: 'เบอร์โทรศัพท์', sortable: true },
-                                            {
-                                                accessor: 'Expire_Date',
-                                                title: 'วันหมดอายุ',
-                                                sortable: true,
-                                                render: ({ Expire_Date }) => <div>{formatDate(Expire_Date)}</div>,
-                                            },
-                                            {
-                                                accessor: 'Status',
-                                                title: 'สถานะ',
-                                                sortable: true,
-                                                render: ({ Status }) => <span className={`badge bg-${colorBadgeStatus(Status)}/10 text-${colorBadgeStatus(Status)} py-1.5 dark:bg-${colorBadgeStatus(Status)} dark:text-white`}>{showStatus(Status)}</span>,
-                                            },
+                                            { accessor: 'Target_ID', title: 'รหัสพนักงาน', sortable: true },
+                                            { accessor: 'Target_Name', title: 'ชื่อ-นามสกุล', sortable: true },
+                                            { accessor: 'Target_Sector', title: 'หน่วยงานผู้สร้าง', sortable: true },
                                             {
                                                 accessor: 'Action',
                                                 title: 'ดำเนินการ',
