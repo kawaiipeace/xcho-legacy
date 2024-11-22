@@ -554,7 +554,7 @@ const Lists = () => {
                                 { accessor: 'Tel', title: 'เบอร์โทรศัพท์', sortable: true },
                                 {
                                     accessor: 'Expire_Date',
-                                    title: 'วันหมดอายุ',
+                                    title: 'วันที่หมดเขต',
                                     sortable: true,
                                     render: ({ Expire_Date }) => <div>{formatDate(Expire_Date)}</div>,
                                 },

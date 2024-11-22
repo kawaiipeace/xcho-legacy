@@ -574,14 +574,19 @@ const Lists = () => {
                                 showContextMenu([])(event)}
                             columns={[
                                 { accessor: 'Survey_Title', title: 'ชื่อหัวข้อ', sortable: true },
-                                { accessor: 'Sector_Creator', title: 'หน่วยงานผู้สร้าง', sortable: true },
-                                { accessor: 'Tel', title: 'เบอร์โทรศัพท์', sortable: true },
                                 {
                                     accessor: 'Expire_Date',
-                                    title: 'วันหมดอายุ',
+                                    title: 'วันที่หมดเขต',
                                     sortable: true,
                                     render: ({ Expire_Date }) => <div>{formatDate(Expire_Date)}</div>,
                                 },
+                                {
+                                    accessor: 'Expire_Date',
+                                    title: 'ปรับปรุงล่าสุด',
+                                    sortable: true,
+                                    render: ({ Expire_Date }) => <div>{formatDate(Expire_Date)}</div>,
+                                },
+                                { accessor: 'Tel', title: 'ผู้ตอบต่อเป้าหมาย', sortable: true },
                                 {
                                     accessor: 'Status',
                                     title: 'สถานะ',

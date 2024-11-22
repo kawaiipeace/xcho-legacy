@@ -62,7 +62,8 @@ COMMENT ON COLUMN public.history.created_by IS 'Stamp ID ผู้สร้า�
 
 -- Master_Status TABLE
 CREATE TABLE public.master_status (
-    status_id smallint NOT NULL,
+    status_id smallint NOT NULL,    
+    status_name character varying NOT NULL COLLATE pg_catalog."th_TH",
     status_detail character varying NOT NULL COLLATE pg_catalog."th_TH"
 );
 ALTER TABLE public.master_status OWNER TO postgres;
@@ -206,17 +207,17 @@ ALTER TABLE ONLY public.survey
 --
 
 -- INSERT TO master_status
-INSERT INTO public.master_status(status_id,status_detail) VALUES (10,'บันทึกร่าง (แก้ไขแบบฟอร์มได้)');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (11,'รออนุมัติ');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (12,'อนุมัติสำเร็จ');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (13,'ตีกลับแก้ไข (แก้ไขแบบฟอร์มได้)');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (20,'รอเผยแพร่');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (21,'เผยแพร่แล้ว');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (22,'ระงับเผยแพร่');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (23,'เต็มโควต้า');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (24,'หมดอายุ');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (30,'ยังไม่ตอบหรือร่างคำตอบ');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (31,'ตอบแล้ว');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (32,'ตอบไม่ทัน');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (33,'ตอบแล้ว (แก้ไขคำตอบ)');
-INSERT INTO public.master_status(status_id,status_detail) VALUES (90,'ลบ');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (10,'ฉบับร่าง','บันทึกร่าง (แก้ไขแบบฟอร์มได้)');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (11,'รออนุมัติ','รออนุมัติ');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (12,'อนุมัติสำเร็จ','อนุมัติสำเร็จ');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (13,'ตีกลับแก้ไข','ตีกลับแก้ไข (แก้ไขแบบฟอร์มได้)');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (20,'ฉบับร่าง','ฉบับร่าง/รอเผยแพร่');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (21,'เผยแพร่แล้ว','เผยแพร่แล้ว');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (22,'หยุดเผยแพร่','หยุดเผยแพร่/ระงับการเผยแพร่');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (23,'เต็มโควต้า','เต็มโควต้า');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (24,'สิ้นสุด','หมดอายุ/สิ้นสุดทำตอบ');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (30,'ยังไม่ตอบ','ยังไม่ตอบหรือร่างคำตอบ');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (31,'ตอบแล้ว','ตอบแล้ว');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (32,'สิ้นสุด','ตอบไม่ทัน/สิ้นสุดทำตอบ');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (33,'แก้ไขคำตอบ','ตอบแล้ว (แก้ไขคำตอบ)');
+INSERT INTO public.master_status(status_id,status_name,status_detail) VALUES (90,'ลบ','ลบถาวร (แต่ติด Flag ไว้อยู่)');

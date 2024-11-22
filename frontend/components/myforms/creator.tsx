@@ -2,10 +2,10 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState, useRef, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaRegTrashCan, FaQrcode, FaEye, FaUserPlus, FaWpforms, FaShareFromSquare, FaRegShareFromSquare, FaBullseye, FaLocationCrosshairs, FaXmark } from "react-icons/fa6";
+import { FaRegTrashCan, FaQrcode, FaEye, FaUserPlus, FaWpforms, FaRegShareFromSquare, FaLocationCrosshairs, FaXmark } from "react-icons/fa6";
 import { IRootState } from '@/store';
 import { IoDuplicateSharp } from "react-icons/io5";
-import { MdMoreHoriz, MdDashboard, MdAddBox, MdDeleteForever } from "react-icons/md";
+import { MdMoreHoriz, MdDashboard, MdDeleteForever } from "react-icons/md";
 import { getTranslation } from '@/i18n';
 import { useContextMenu } from 'mantine-contextmenu';
 import { useMediaQuery, usePagination } from '@mantine/hooks';
@@ -387,11 +387,6 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
     creator.JSON = props.json;
 
     return (
-        /*
-        <div style={{ height: "80vh", width: "100%" }}>
-            <SurveyCreatorComponent creator={creator} />
-        </div>
-        */
         <div className="mb-5">
             {isAlertVisible && (
                 <div className="flex items-center p-3.5 rounded text-info bg-info-light dark:bg-info-dark-light">
