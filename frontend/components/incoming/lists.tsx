@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 'use client';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import Select from 'react-select';
 import IconLayoutGrid from '@/components/icon/icon-layout-grid';
@@ -63,11 +63,11 @@ const Lists = () => {
 
     {/* Select จำนวนหน้า สำหรับใช้ใน Grid View */ }
     const pageSize_select = [
-        { value: 10, label: '10'},
-        { value: 20, label: '20'},
-        { value: 30, label: '30'},
-        { value: 50, label: '50'},
-        { value: 100, label: '100'},
+        { value: 10, label: '10' },
+        { value: 20, label: '20' },
+        { value: 30, label: '30' },
+        { value: 50, label: '50' },
+        { value: 100, label: '100' },
     ];
 
     {/* Pagination สำหรับใช้ใน Grid View */ }
@@ -392,7 +392,7 @@ const Lists = () => {
             .join(' ');
     };
 
-    {/* RETURN Display start from here */}
+    {/* RETURN Display start from here */ }
     return (
         <div>
             <div className="mb-6 grid grid-cols-1 gap-6 text-white sm:grid-cols-2 lg:grid-cols-3">
@@ -597,7 +597,13 @@ const Lists = () => {
                         <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
                             <div className="flex flex-wrap items-center custom-select">
                                 <p>จำนวนรายการต่อหน้า</p>
-                                <Select className="mx-2" defaultValue={pageSize_select[0]} options={pageSize_select} isSearchable={false}/>
+                                <Select
+                                    className="mx-2"
+                                    value={pageSize} // Bind it to the pageSize state
+                                    options={pageSize_select}
+                                    isSearchable={false}
+                                    onChange={(pageSize_select: { value: number; label: string; }) => setPageSize(pageSize_select.value)} // Set the new page size when selected
+                                />
                             </div>
 
                             <div className='flex flex-wrap items-end'>
