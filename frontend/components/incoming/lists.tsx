@@ -31,6 +31,9 @@ import { SurveyPDF } from "survey-pdf";
 import survey_json from '@/public/assets/survey_json.json'
 
 import IconSearch from '@/components/icon/icon-search';
+import Survey from '@/model/survey';
+import CreateSurveyRequest from '@/model/createSurveyRequest';
+import { CreateSurvey, fetchSurveysByAssigneeId } from '@/service/surveyService';
 
 moment.locale('th');
 const rowData = survey_record;
@@ -44,10 +47,12 @@ function savePDF(model: Model) {
 };
 
 const Lists = () => {
+    const [rowData, setRowData] = useState<Survey[]>([]);
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl';
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => {
+        getSurveys();
         setIsMounted(true);
     }, []);
     const { showContextMenu } = useContextMenu();
@@ -60,6 +65,27 @@ const Lists = () => {
     const [value, setValue] = useState<any>('list');
     const tableRef = useRef(null);
     const { t, i18n } = getTranslation();
+
+    const getSurveys = async () => {
+        try {
+            const testPostRequest = new CreateSurveyRequest();
+            testPostRequest.survey_title = 'test post from next';
+            testPostRequest.creator_id = 41;
+            testPostRequest.publish_date = new Date(2025,2,1);
+            testPostRequest.content_survey = JSON.parse('{"questions":[{"id":1,"question":"How satisfied are you with our service?","type":"rating"},{"id":2,"question":"What can we improve?","type":"text"},{"id":3,"question":"new Update2","type":"text"}]}');
+            testPostRequest.expire_date = new Date(2025,3,1);
+            testPostRequest.short_link = '';
+            testPostRequest.qr_code = '';
+            testPostRequest.is_outsider_allowed = false;
+           
+            //42 is assigneeId
+            const data = await fetchSurveysByAssigneeId('42');
+            setInitialRecords(sortBy(data, 'id'));
+            //await CreateSurveyeSurvey(testPostRequest);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     {/* Select จำนวนหน้า สำหรับใช้ใน Grid View */ }
     const pageSize_select = [
@@ -627,7 +653,7 @@ const Lists = () => {
                             </div>
                         </div>
                         <div className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
-                            {recordsData.map((item: any) => {
+                            {recordsData.map((item: Survey) => {
                                 return (
                                     <div className="mb-5 flex items-center justify-center" key={item.id}>
                                         <div className="w-full max-w-[22rem] rounded border border-white-light bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none">
