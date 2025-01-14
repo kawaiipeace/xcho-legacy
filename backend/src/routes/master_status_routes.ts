@@ -1,9 +1,5 @@
-// src/routes/userRoutes.ts
 import { Elysia } from 'elysia';
-import { master_status }from '../../models/master_status';
-import sequelize from "../database";
-
-master_status.initModel(sequelize);
+import { master_status }from '../../db-models/master_status';
 
 const statusRoutes = new Elysia({ prefix : '/master-status'})
     .get("/all-status", async () => {

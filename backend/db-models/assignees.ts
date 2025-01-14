@@ -64,7 +64,7 @@ export class assignees extends Model<assigneesAttributes, assigneesCreationAttri
     sequelize,
     tableName: 'assignees',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "assignees_pk",

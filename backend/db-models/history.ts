@@ -68,6 +68,12 @@ export class history extends Model<historyAttributes, historyCreationAttributes>
       allowNull: true,
       comment: "request body"
     },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP'),
+      comment: "Timestamp วันและเวลาของการสร้าง"
+    },
     created_by: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -77,7 +83,7 @@ export class history extends Model<historyAttributes, historyCreationAttributes>
     sequelize,
     tableName: 'history',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "history_pk",

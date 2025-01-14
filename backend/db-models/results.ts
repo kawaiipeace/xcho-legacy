@@ -85,7 +85,7 @@ export class results extends Model<resultsAttributes, resultsCreationAttributes>
     sequelize,
     tableName: 'results',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "results_pk",

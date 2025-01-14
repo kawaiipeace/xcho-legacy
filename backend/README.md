@@ -18,4 +18,4 @@ Open http://localhost:2501/ with your browser to see the result.
 
 
 run this to scaffold from Database
-sequelize-auto -h localhost -d xcho -u postgres -x 123456 -p 2502 -e postgres -o ./models --lang ts
+sequelize-auto -h localhost -d xcho -u postgres -x 123456 -p 2502 -e postgres -o ./db-models --lang ts

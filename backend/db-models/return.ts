@@ -42,7 +42,7 @@ export class return_ extends Model<return_Attributes, return_CreationAttributes>
     sequelize,
     tableName: 'return',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "return_pk",

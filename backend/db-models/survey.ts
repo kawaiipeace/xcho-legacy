@@ -16,6 +16,7 @@ export interface surveyAttributes {
   created_by: number;
   update_at?: Date;
   update_by: number;
+  content_survey: object;
 }
 
 export type surveyPk = "id";
@@ -38,6 +39,7 @@ export class survey extends Model<surveyAttributes, surveyCreationAttributes> im
   created_by!: number;
   update_at?: Date;
   update_by!: number;
+  content_survey!: object;
 
 
   static initModel(sequelize: Sequelize.Sequelize): typeof survey {
@@ -93,6 +95,12 @@ export class survey extends Model<surveyAttributes, surveyCreationAttributes> im
       allowNull: false,
       comment: "บุคคลภายนอกตอบแบบสอบถามได้หรือไม่"
     },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP'),
+      comment: "Timestamp วันและเวลาของการสร้าง"
+    },
     created_by: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -108,12 +116,16 @@ export class survey extends Model<surveyAttributes, surveyCreationAttributes> im
       type: DataTypes.INTEGER,
       allowNull: false,
       comment: "Stamp ID ผู้ปรับปรุง"
+    },
+    content_survey: {
+      type: DataTypes.JSON,
+      allowNull: false
     }
   }, {
     sequelize,
     tableName: 'survey',
     schema: 'public',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "survey_pk",
