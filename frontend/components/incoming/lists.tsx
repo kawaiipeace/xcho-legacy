@@ -668,31 +668,31 @@ const Lists = () => {
                                                     />
                                                 </div>
                                                 <div className="flex justify-between">
-                                                    <h4 className="text-black font-semibold text-base dark:text-white-light">{item.Survey_Title}</h4>
-                                                    <span className={`badge bg-outline-${colorBadgeStatus(item.Status)}/10 text-${colorBadgeStatus(item.Status)} py-1.5 dark:bg-${colorBadgeStatus(item.Status)} dark:text-white !important`}>{item.Status}</span>
+                                                    <h4 className="text-black font-semibold text-base dark:text-white-light">{item.survey_title}</h4>
+                                                    <span className={`badge bg-outline-${colorBadgeStatus(item.status)}/10 text-${colorBadgeStatus(item.status)} py-1.5 dark:bg-${colorBadgeStatus(item.status)} dark:text-white !important`}>{item.status}</span>
                                                 </div>
                                                 <div className="flex font-semibold mb-5">
                                                     <div className="flex text-primary ltr:mr-3 rtl:ml-3">
                                                         <p className="flex mb-1.5 text-xs font-bold text-primary ">
                                                             <FaClock className="h-3 w-3 ltr:mr-2 rtl:ml-2" />
-                                                            {formatDate(item.Expire_Date)}
+                                                            {formatDate(item.expire_date)}
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    {actionStatusGrid(item.id, item.Status)}
+                                                    {actionStatusGrid(item.id, item.status)}
                                                 </div>
                                                 <div className="relative mt-6 flex justify-between pt-4 before:absolute before:inset-x-0 before:top-0 before:mx-auto before:h-[1px] before:w-[250px] before:bg-white-light dark:before:bg-[#1b2e4b]">
                                                     <div className="flex items-center font-semibold">
                                                         <div className="inline-block h-9 w-9 shrink-0 overflow-hidden rounded-full ltr:mr-2 rtl:ml-2.5">
                                                             <span className="flex h-full w-full items-center justify-center bg-[#362867] text-white-light">XC</span>
                                                         </div>
-                                                        <div className="text-[#362867] dark:text-white-dark">{item.Sector_Creator}</div>
+                                                        <div className="text-[#362867] dark:text-white-dark">{item.sector_creator}</div>
                                                     </div>
                                                     <div className="flex font-semibold">
                                                         <div className="flex items-center text-primary ltr:mr-3 rtl:ml-3">
                                                             <FaPhone className="h-4 w-4 ltr:mr-1 rtl:ml-1" />
-                                                            {item.Tel}
+                                                            {item.tel}
                                                         </div>
                                                     </div>
                                                 </div>
