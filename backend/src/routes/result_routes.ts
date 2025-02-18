@@ -66,6 +66,18 @@ const resultRoutes = new Elysia({ prefix : '/results'})
     })
     return searchResult;
 })
+.get('/get-result-by-surv-resp-id', async (req) =>{
+    const surveyId = req.query.survey_id;
+    const respondentId = req.query.respondent_id;
+    var searchResult : results[] = [];
+    searchResult = await results.findAll({
+        where:{
+            survey_id : surveyId,
+            respondent_id : respondentId,
+        }
+    })
+    return searchResult;
+})
 .get('/get-result-by-personal-id', async (req) =>{
     const personalId = req.query.id;
     var searchResult : results[] = [];
