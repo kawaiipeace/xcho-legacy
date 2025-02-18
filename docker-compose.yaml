@@ -1,0 +1,60 @@
+services:
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    container_name: xcho-db
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "${DATABASE_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      xcho-network:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: xcho-backend
+    depends_on:
+      - db
+    restart: always
+    env_file:
+      - .env
+    environment:
+      ORIGIN: ${ORIGIN}
+    ports:
+      - "${BACKEND_PORT}:2501"
+    networks:
+      xcho-network:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: xcho-frontend
+    depends_on:
+      - backend
+      - db
+    restart: always
+    env_file:
+      - .env
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    ports:
+      - "${FRONTEND_PORT}:2500"
+    networks:
+      xcho-network:
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  xcho-network:
+    driver: bridge
