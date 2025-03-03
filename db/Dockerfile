@@ -20,7 +20,7 @@ RUN git clone --branch main https://github.com/pgaudit/pgaudit.git /tmp/pgaudit 
     make install && \
     rm -rf /tmp/pgaudit
 
-COPY ./initdb/xcho.sql /docker-entrypoint-initdb.d/
+# COPY ./initdb/xcho.sql /docker-entrypoint-initdb.d/
 
 EXPOSE 5432
 
