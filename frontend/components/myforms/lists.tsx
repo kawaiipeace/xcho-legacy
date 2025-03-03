@@ -55,11 +55,11 @@ const Lists = () => {
 
     {/* Select จำนวนหน้า สำหรับใช้ใน Grid View */ }
     const pageSize_select = [
-        { value: 10, label: '10'},
-        { value: 20, label: '20'},
-        { value: 30, label: '30'},
-        { value: 50, label: '50'},
-        { value: 100, label: '100'},
+        { value: 10, label: '10' },
+        { value: 20, label: '20' },
+        { value: 30, label: '30' },
+        { value: 50, label: '50' },
+        { value: 100, label: '100' },
     ];
 
     {/* Pagination สำหรับใช้ใน Grid View */ }
@@ -395,9 +395,8 @@ const Lists = () => {
     };
     return (
         <div>
-            <div className="mb-6 grid grid-cols-1 gap-6 text-white sm:grid-cols-2 lg:grid-cols-4">
-                {/* แบบฟอร์มที่เผยแพร่แล้ว */}
-                <div className="panel area-bg-success">
+            <div className="mb-6 grid grid-cols-1 gap-6 text-white sm:grid-cols-2 lg:grid-cols-3">
+                <div className="panel area-bg-success sm:col-span-2 lg:col-span-1 dark:area-bg-primary-dark">
                     <ul className="circles-bg">
                         <li></li>
                         <li></li>
@@ -414,41 +413,11 @@ const Lists = () => {
                         <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">{t('แบบฟอร์มเผยแพร่แล้ว')}</div>
                     </div>
                     <div className="mt-5 flex items-center">
-                        <div className="text-7xl font-bold ltr:mr-3 rtl:ml-3"> 5 </div>
-                    </div>
-                    {/*
-                    <div className="mt-5 flex items-center font-semibold">
-                        <FaWpforms className="shrink-0 ltr:mr-2 rtl:ml-2" />
-                        {t('จากทั้งหมด 30')}
-                    </div>
-                    */}
-                </div>
-
-                {/* แบบฟอร์มที่รออนุมัติ */}
-                <div className="panel area-bg-primary">
-                    <ul className="circles-bg">
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <div className="flex justify-between">
-                        <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">{t('แบบฟอร์มรออนุมัติ')}</div>
-                    </div>
-                    <div className="mt-5 flex items-center">
                         <div className="text-7xl font-bold ltr:mr-3 rtl:ml-3"> 3 </div>
                     </div>
                 </div>
 
-                {/* แบบฟอร์มที่โดนตีกลับ */}
                 <div className="panel area-bg-warning">
-
                     <ul className="circles-bg">
                         <li></li>
                         <li></li>
@@ -462,16 +431,14 @@ const Lists = () => {
                         <li></li>
                     </ul>
                     <div className="flex justify-between">
-                        <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">{t('แบบฟอร์มโดนตีกลับ')}</div>
+                        <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">{t('แบบฟอร์มกำลังออกแบบ')}</div>
                     </div>
                     <div className="mt-5 flex items-center">
-                        <div className="text-7xl font-bold ltr:mr-3 rtl:ml-3"> 2 </div>
+                        <div className="text-7xl font-bold ltr:mr-3 rtl:ml-3"> 5 </div>
                     </div>
                 </div>
 
-                {/* แบบฟอร์มที่หยุดเผยแพร่ */}
                 <div className="panel area-bg-danger">
-
                     <ul className="circles-bg">
                         <li></li>
                         <li></li>
@@ -485,7 +452,7 @@ const Lists = () => {
                         <li></li>
                     </ul>
                     <div className="flex justify-between">
-                        <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">{t('แบบฟอร์มหยุดเผยแพร่')}</div>
+                        <div className="text-md font-semibold ltr:mr-1 rtl:ml-1">{t('แบบฟอร์มสิ้นสุดหรือหยุดเผยแพร่')}</div>
                     </div>
                     <div className="mt-5 flex items-center">
                         <div className="text-7xl font-bold ltr:mr-3 rtl:ml-3"> 7 </div>
@@ -623,32 +590,32 @@ const Lists = () => {
 
                 {value === 'grid' && (
                     <>
-                    <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
-                        <div className="flex flex-wrap items-center custom-select">
-                            <p>จำนวนรายการต่อหน้า</p>
-                            <Select className="mx-2" defaultValue={pageSize_select[0]} options={pageSize_select} isSearchable={false}/>
-                        </div>
+                        <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
+                            <div className="flex flex-wrap items-center custom-select">
+                                <p>จำนวนรายการต่อหน้า</p>
+                                <Select className="mx-2" defaultValue={pageSize_select[0]} options={pageSize_select} isSearchable={false} />
+                            </div>
 
-                        <div className='flex flex-wrap items-end'>
-                            {pagination.range.map((range) =>
-                                range === 'dots' ? (
-                                    <div className="flex justify-center font-semibold px-3.5 py-2 rounded transition text-dark hover:text-primary border-2 border-white-light dark:border-[#191e3a] hover:border-primary dark:hover:border-primary dark:text-white-light">
-                                        <button key={range}>...</button>
-                                    </div>
-                                ) :
-                                    (
-                                        <div className={pagination.active === range ? 'flex justify-center mx-1 rounded border-2 border-primary px-3.5 py-2 font-semibold text-primary transition dark:border-primary dark:text-white-light' : 'flex justify-center mx-1 rounded border-2 border-white-light px-3.5 py-2 font-semibold text-dark transition hover:border-primary hover:text-primary dark:border-[#191e3a] dark:text-white-light dark:hover:border-primary'}>
-                                            <button
-                                                key={range}
-                                                onClick={() => pagination.setPage(range)}
-                                            >
-                                                {range}
-                                            </button>
+                            <div className='flex flex-wrap items-end'>
+                                {pagination.range.map((range) =>
+                                    range === 'dots' ? (
+                                        <div className="flex justify-center font-semibold px-3.5 py-2 rounded transition text-dark hover:text-primary border-2 border-white-light dark:border-[#191e3a] hover:border-primary dark:hover:border-primary dark:text-white-light">
+                                            <button key={range}>...</button>
                                         </div>
-                                    )
-                            )}
+                                    ) :
+                                        (
+                                            <div className={pagination.active === range ? 'flex justify-center mx-1 rounded border-2 border-primary px-3.5 py-2 font-semibold text-primary transition dark:border-primary dark:text-white-light' : 'flex justify-center mx-1 rounded border-2 border-white-light px-3.5 py-2 font-semibold text-dark transition hover:border-primary hover:text-primary dark:border-[#191e3a] dark:text-white-light dark:hover:border-primary'}>
+                                                <button
+                                                    key={range}
+                                                    onClick={() => pagination.setPage(range)}
+                                                >
+                                                    {range}
+                                                </button>
+                                            </div>
+                                        )
+                                )}
+                            </div>
                         </div>
-                    </div>
                         <div className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6">
                             {recordsData.map((item: any) => {
                                 return (

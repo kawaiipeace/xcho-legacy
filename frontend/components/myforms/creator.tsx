@@ -2,10 +2,10 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState, useRef, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaRegTrashCan, FaQrcode, FaEye, FaUserPlus, FaWpforms, FaRegShareFromSquare, FaLocationCrosshairs, FaXmark } from "react-icons/fa6";
+import { FaRegTrashCan, FaQrcode, FaEye, FaUserPlus, FaWpforms, FaRegShareFromSquare, FaLocationCrosshairs, FaXmark, FaCircleInfo } from "react-icons/fa6";
 import { IRootState } from '@/store';
 import { IoDuplicateSharp } from "react-icons/io5";
-import { MdMoreHoriz, MdDashboard, MdDeleteForever } from "react-icons/md";
+import { MdMoreHoriz, MdDashboard, MdDeleteForever, MdHelpOutline, MdHelp } from "react-icons/md";
 import { getTranslation } from '@/i18n';
 import { useContextMenu } from 'mantine-contextmenu';
 import { useMediaQuery, usePagination } from '@mantine/hooks';
@@ -36,6 +36,7 @@ import 'moment/locale/th';
 import 'tippy.js/dist/tippy.css';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
+import { Dialog, Transition } from '@headlessui/react';
 
 import IconSearch from '@/components/icon/icon-search';
 
@@ -65,9 +66,24 @@ const defaultCreatorOptions: ICreatorOptions = {
 export default function Creator(props: { json?: Object, options?: ICreatorOptions }) {
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
     const [isMounted, setIsMounted] = useState(false);
+    const [isInternalForm, setIsInternalForm] = useState(true);
+
+    const handleInternalFormChange = () => {
+        setIsInternalForm(true);
+    };
+
+    const handleExternalFormChange = () => {
+        setIsInternalForm(false);
+    };
+
     useEffect(() => {
         setIsMounted(true);
+        const defaultInternalForm = document.querySelector('input[name="internal_form"]:checked');
+        if (defaultInternalForm) {
+            setIsInternalForm(true);
+        }
     }, []);
+
     const { showContextMenu } = useContextMenu();
     const isTouch = useMediaQuery('(pointer: coarse)');
     const [page, setPage] = useState(1);
@@ -82,6 +98,7 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
     const [start_publish, set_start_publish] = useState<any>('today');
     const [end_publish, set_end_publish] = useState<any>('today');
     const [isAlertVisible, setIsAlertVisible] = useState(true);
+    const [modal09, setModal09] = useState(false);
 
     const handleCloseAlert = () => {
         setIsAlertVisible(false);
@@ -418,17 +435,6 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                     className={`${selected ? '!bg-primary text-white !outline-none' : ''}
                                                     flex flex-col items-center justify-center rounded-lg bg-[#f1f2f3] p-7 py-3 hover:!bg-primary hover:text-white hover:shadow-[0_5px_15px_0_rgba(0,0,0,0.30)] dark:bg-[#191e3a]`}
                                 >
-                                    <FaLocationCrosshairs className="mb-1 h-5 w-5" />
-                                    กลุ่มเป้าหมาย
-                                </button>
-                            )}
-                        </Tab>
-                        <Tab as={Fragment}>
-                            {({ selected }) => (
-                                <button
-                                    className={`${selected ? '!bg-primary text-white !outline-none' : ''}
-                                                    flex flex-col items-center justify-center rounded-lg bg-[#f1f2f3] p-7 py-3 hover:!bg-primary hover:text-white hover:shadow-[0_5px_15px_0_rgba(0,0,0,0.30)] dark:bg-[#191e3a]`}
-                                >
                                     <FaRegShareFromSquare className="mb-1 h-5 w-5" />
                                     การเผยแพร่
                                 </button>
@@ -437,87 +443,18 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                     </Tab.List>
                     <Tab.Panels>
                         <Tab.Panel>
-                            <div className="active" style={{ height: "80vh", width: "100%" }}>
+                            <div className="active" style={{ height: "120vh", width: "100%" }}>
                                 <SurveyCreatorComponent creator={creator} />
-                            </div>
-                        </Tab.Panel>
-                        <Tab.Panel>
-                            <div className="panel mt-6">
-                                <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
-                                    <div className="flex flex-wrap items-center">
-                                        <h2 className="text-xl">{t('กลุ่มเป้าหมาย')}</h2>
-                                    </div>
-
-                                    <div className='flex flex-wrap items-end'>
-                                        <Link href={"#"} >
-                                            <button type="button" className="btn btn-primary m-1 p-2">
-                                                <span>
-                                                    <FaUserPlus className="h-5 w-5 ltr:mr-1 rtl:ml-1" />
-                                                </span>
-                                                &nbsp;{t('เพิ่มเป้าหมาย')}
-                                            </button>
-                                        </Link>
-
-                                        <div className="relative">
-                                            <input type="text" className="peer form-input w-auto m-1 p-2 ltr:pr-11 rtl:pl-11" placeholder="ค้นหา..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                                            <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
-                                                <IconSearch className="mx-auto" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="datatables">
-                                    <DataTable
-                                        tableRef={tableRef}
-                                        highlightOnHover
-                                        striped
-                                        noRecordsText="ไม่พบข้อมูล"
-                                        className="table-hover whitespace-nowrap"
-                                        textSelectionDisabled={isTouch}
-                                        records={recordsData}
-                                        onRowContextMenu={({ event }) =>
-                                            showContextMenu([])(event)}
-                                        columns={[
-                                            { accessor: 'Target_ID', title: 'รหัสพนักงาน', sortable: true },
-                                            { accessor: 'Target_Name', title: 'ชื่อ-นามสกุล', sortable: true },
-                                            { accessor: 'Target_Position', title: 'ตำแหน่ง', sortable: true },
-                                            { accessor: 'Target_Sector', title: 'สังกัด', sortable: true },
-                                            {
-                                                accessor: 'Action',
-                                                title: 'ดำเนินการ',
-                                                titleClassName: '!text-center',
-                                                render: ({ id, Status }) => (
-                                                    <div>
-                                                        {actionStatusList(id, Status)}
-                                                    </div>
-                                                ),
-                                            },
-                                        ]}
-                                        totalRecords={initialRecords.length}
-                                        recordsPerPage={pageSize}
-                                        recordsPerPageLabel={`จำนวนรายการต่อหน้า`}
-                                        page={page}
-                                        onPageChange={(p) => setPage(p)}
-                                        recordsPerPageOptions={PAGE_SIZES}
-                                        onRecordsPerPageChange={setPageSize}
-                                        sortStatus={sortStatus}
-                                        onSortStatusChange={setSortStatus}
-                                        minHeight={200}
-                                        paginationText={({ from, to, totalRecords }) => `แสดงจาก  ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`}
-                                        paginationActiveBackgroundColor="grape"
-                                        loadingText="กำลังโหลด ใจเย็น ๆ..."
-                                    />
-                                </div>
                             </div>
                         </Tab.Panel>
                         <Tab.Panel>
                             <div>
                                 <form className="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-black">
-                                    <h6 className="mb-5 text-lg">ช่วงวันและเวลาในการเผยแพร่</h6>
-                                    <div className="flex flex-col sm:flex-row">
-                                        <div className="grid flex-1 grid-cols-1 gap-5 sm:grid-cols-2">
+                                    <h6 className="mb-5 text-lg">ข้อมูลการเผยแพร่</h6>
+                                    <div>
+                                        <div className="grid grid-cols-1 gap-5 mb-5 sm:grid-cols-2">
                                             <div>
-                                                <label htmlFor="start_publish">วันและเวลาที่เริ่มต้น</label>
+                                                <label htmlFor="start_publish">เริ่มต้นเผยแพร่</label>
                                                 <Flatpickr
                                                     data-enable-time
                                                     options={{
@@ -531,7 +468,7 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                                 />
                                             </div>
                                             <div>
-                                                <label htmlFor="end_publish">วันและเวลาที่สิ้นสุด</label>
+                                                <label htmlFor="end_publish">สิ้นสุดเผยแพร่</label>
                                                 <Flatpickr
                                                     data-enable-time
                                                     options={{
@@ -544,17 +481,192 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                                     onChange={(end_publish) => set_end_publish(end_publish)}
                                                 />
                                             </div>
-                                            <div className="mt-3 sm:col-span-2">
-                                                <button type="button" className="btn btn-primary">
-                                                    Save
+                                        </div>
+                                        <div className="mb-5">
+                                            <div className="inline-flex mb-2">
+                                                <label htmlFor="selection_publish">{t('ลักษณะการเผยแพร่')}</label>
+                                                <button type="button" onClick={() => setModal09(true)} className="inline-flex ml-1 text-primary text-center">
+                                                    <FaCircleInfo className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                                                 </button>
                                             </div>
+                                            <div>
+                                                <Transition appear show={modal09} as={Fragment}>
+                                                    <Dialog as="div" open={modal09} onClose={() => setModal09(false)}>
+                                                        <Transition.Child
+                                                            as={Fragment}
+                                                            enter="ease-out duration-300"
+                                                            enterFrom="opacity-0"
+                                                            enterTo="opacity-100"
+                                                            leave="ease-in duration-200"
+                                                            leaveFrom="opacity-100"
+                                                            leaveTo="opacity-0"
+                                                        >
+                                                            <div className="fixed inset-0" />
+                                                        </Transition.Child>
+                                                        <div id="standard_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                                                            <div className="flex items-start justify-center min-h-screen px-4">
+                                                                <Transition.Child
+                                                                    as={Fragment}
+                                                                    enter="ease-out duration-300"
+                                                                    enterFrom="opacity-0 scale-95"
+                                                                    enterTo="opacity-100 scale-100"
+                                                                    leave="ease-in duration-200"
+                                                                    leaveFrom="opacity-100 scale-100"
+                                                                    leaveTo="opacity-0 scale-95"
+                                                                >
+                                                                    <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark">
+                                                                        <div className="flex py-2 bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-center">
+                                                                            <span className="flex items-center justify-center w-16 h-16 rounded-full bg-[#f1f2f3] dark:bg-white/10">
+                                                                                <MdHelpOutline className="h-14 w-14 text-primary" />
+                                                                            </span>
+                                                                        </div>
+                                                                        <div className="p-5">
+                                                                            <div className="py-5 text-white-dark text-start">
+                                                                                <p>
+                                                                                    ภายใน กฟภ. คือแบบฟอร์มที่ใช้ได้เฉพาะพนักงานหรือลูกจ้างที่กำหนดไว้และจำเป็นต้องเข้าสู่ระบบเพื่อทำแบบสำรวจ (เหมาะสำหรับติดตามและประเมินบุคคล)
+                                                                                </p>
+                                                                                <br />
+                                                                                <hr />
+                                                                                <br />
+                                                                                <p>
+                                                                                    สาธารณะ คือแบบฟอร์มเปิดที่สามารถเข้าถึงได้โดยไม่จำเป็นต้องเข้าสู่ระบบ (เหมาะสำหรับบุคคลภายนอกหรือไม่ระบุตัวตน)
+                                                                                </p>
+                                                                            </div>
+                                                                            <div className="flex justify-center items-center mt-8">
+                                                                                <button type="button" onClick={() => setModal09(false)} className="btn btn-primary ltr:ml-4 rtl:mr-4">
+                                                                                    {t('ฉันเข้าใจแล้ว')}
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </Dialog.Panel>
+                                                                </Transition.Child>
+                                                            </div>
+                                                        </div>
+                                                    </Dialog>
+                                                </Transition>
+                                            </div>
+
+                                            <div className="flex-5 mb-5">
+                                                <label className="inline-flex mr-3">
+                                                    <input
+                                                        type="radio"
+                                                        name="internal_form"
+                                                        className="form-radio peer"
+                                                        checked={isInternalForm}
+                                                        onChange={handleInternalFormChange}
+                                                    />
+                                                    <span className="peer-checked:text-primary">ภายใน กฟภ.</span>
+                                                </label>
+                                                <label className="inline-flex">
+                                                    <input
+                                                        type="radio"
+                                                        name="external_form"
+                                                        className="form-radio text-success peer"
+                                                        checked={!isInternalForm}
+                                                        onChange={handleExternalFormChange}
+                                                    />
+                                                    <span className="peer-checked:text-success">สาธารณะ</span>
+                                                </label>
+                                            </div>
+
+                                            {isInternalForm && (
+                                                <div className="grid mb-5">
+                                                    <div className="panel mb-5">
+                                                        <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
+                                                            <div className="flex flex-wrap items-center">
+                                                                <h2 className="text-xl">{t('กลุ่มเป้าหมาย')}</h2>
+                                                            </div>
+
+                                                            <div className='flex flex-wrap items-end'>
+                                                                <Link href={"#"} >
+                                                                    <button type="button" className="btn btn-primary m-1 p-2">
+                                                                        <span>
+                                                                            <FaUserPlus className="h-5 w-5 ltr:mr-1 rtl:ml-1" />
+                                                                        </span>
+                                                                        &nbsp;{t('เพิ่มเป้าหมาย')}
+                                                                    </button>
+                                                                </Link>
+
+                                                                <div className="relative">
+                                                                    <input type="text" className="peer form-input w-auto m-1 p-2 ltr:pr-11 rtl:pl-11" placeholder="ค้นหา..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                                                                    <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
+                                                                        <IconSearch className="mx-auto" />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="datatables">
+                                                            <DataTable
+                                                                tableRef={tableRef}
+                                                                highlightOnHover
+                                                                striped
+                                                                noRecordsText="ไม่พบข้อมูล"
+                                                                className="table-hover whitespace-nowrap"
+                                                                textSelectionDisabled={isTouch}
+                                                                records={recordsData}
+                                                                onRowContextMenu={({ event }) =>
+                                                                    showContextMenu([])(event)}
+                                                                columns={[
+                                                                    { accessor: 'Target_ID', title: 'รหัสพนักงาน', sortable: true },
+                                                                    { accessor: 'Target_Name', title: 'ชื่อ-นามสกุล', sortable: true },
+                                                                    { accessor: 'Target_Position', title: 'ตำแหน่ง', sortable: true },
+                                                                    { accessor: 'Target_Sector', title: 'สังกัด', sortable: true },
+                                                                    {
+                                                                        accessor: 'Action',
+                                                                        title: 'ดำเนินการ',
+                                                                        titleClassName: '!text-center',
+                                                                        render: ({ id, Status }) => (
+                                                                            <div>
+                                                                                {actionStatusList(id, Status)}
+                                                                            </div>
+                                                                        ),
+                                                                    },
+                                                                ]}
+                                                                totalRecords={initialRecords.length}
+                                                                recordsPerPage={pageSize}
+                                                                recordsPerPageLabel={`จำนวนรายการต่อหน้า`}
+                                                                page={page}
+                                                                onPageChange={(p) => setPage(p)}
+                                                                recordsPerPageOptions={PAGE_SIZES}
+                                                                onRecordsPerPageChange={setPageSize}
+                                                                sortStatus={sortStatus}
+                                                                onSortStatusChange={setSortStatus}
+                                                                minHeight={200}
+                                                                paginationText={({ from, to, totalRecords }) => `แสดงจาก  ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`}
+                                                                paginationActiveBackgroundColor="grape"
+                                                                loadingText="กำลังโหลด ใจเย็น ๆ..."
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <label htmlFor="start_publish">จำกัดให้ตอบกลับได้เพียง 1 ครั้ง</label>
+                                                    <label className="w-12 h-6 relative mb-4">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer"
+                                                            id="custom_switch_checkbox1"
+                                                        />
+                                                        <span className="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
+                                                    </label>
+                                                    <label htmlFor="start_publish">อนุญาตให้แก้ไขคำตอบ</label>
+                                                    <label className="w-12 h-6 relative">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="custom_switch absolute w-full h-full opacity-0 z-10 cursor-pointer peer"
+                                                            id="custom_switch_checkbox2"
+                                                        />
+                                                        <span className="bg-[#ebedf2] dark:bg-dark block h-full rounded-full before:absolute before:left-1 before:bg-white dark:before:bg-white-dark dark:peer-checked:before:bg-white before:bottom-1 before:w-4 before:h-4 before:rounded-full peer-checked:before:left-7 peer-checked:bg-primary before:transition-all before:duration-300"></span>
+                                                    </label>
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                </form>
-                                <form className="rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-black">
-                                    <h6 className="mb-5 text-lg font-bold">Social</h6>
-                                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                                        <div className="flex flex-wrap">
+                                            <button type="button" className="btn btn-primary mr-3">
+                                                {t('บันทึกและเผยแพร่ทันที')}
+                                            </button>
+                                            <button type="button" className="btn btn-info">
+                                                {t('บันทึกร่าง')}
+                                            </button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
