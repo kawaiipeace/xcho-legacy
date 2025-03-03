@@ -9,7 +9,12 @@ import HistoryHelper from "../helper/history_helper";
 import { master_status } from "../../db-models/master_status";
 import StatusHelper from "../helper/status_helper";
 
-const surveyRoutes = new Elysia({ prefix : '/surveys'})
+const surveyRoutes = new Elysia({ 
+    prefix : '/surveys',
+    detail:{
+        tags : ['survey']
+    }
+})
     .post('/create-survey', async ({body}:{body:createSurveyRequest}) =>{
         const nowUtc = new Date();
         const nowThai = new Date(nowUtc.getTime() + 7*60*60*1000);
@@ -32,6 +37,11 @@ const surveyRoutes = new Elysia({ prefix : '/surveys'})
             update_by : body.creator_id,
         });
         return JSON.stringify(newSurvey);
+    },{
+        detail : {
+            summary : "Create survey",
+            description : "POST request to create survey."
+        }
     })
     .post('/update-survey', async ({body}:{body:createSurveyRequest}) =>{
         const nowUtc = new Date();
@@ -94,6 +104,11 @@ const surveyRoutes = new Elysia({ prefix : '/surveys'})
             }
         }
         return JSON.stringify(newSurvey);
+    },{
+        detail : {
+            summary : "Update survey",
+            description : "POST request to update survey."
+        }
     })
     .post('/update-survey-status',async ({body}:{body:createSurveyRequest}) =>{
         const nowUtc = new Date();
@@ -140,6 +155,11 @@ const surveyRoutes = new Elysia({ prefix : '/surveys'})
             }
         }
         return JSON.stringify(newSurvey);
+    },{
+        detail : {
+            summary : "Update survey status",
+            description : "POST request to update survey status."
+        }
     })
     .get('/get-survey-by-id', async (req) => {
         const id = req.query.id;
@@ -149,6 +169,11 @@ const surveyRoutes = new Elysia({ prefix : '/surveys'})
             }
         })
         return searchSurvey;
+    },{
+        detail : {
+            summary : "Get survey by survey id",
+            description : "Get request to get survey by survey id."
+        }
     })
     .get('/get-survey-list-by-assignee-id', async (req) => {
         const id = req.query.id;
@@ -199,6 +224,11 @@ const surveyRoutes = new Elysia({ prefix : '/surveys'})
         }
         searchSurvey = status_helper.matchSurveyStatus(searchSurvey, masterStatus);
         return searchSurvey;
+    },{
+        detail : {
+            summary : "Get survey by assignee id",
+            description : "Get request to get survey by assignee id and POC of raw query."
+        }
     })
     .get('/get-survey-list-by-creator-id', async (req) =>{
         const id = req.query.id;
@@ -231,5 +261,10 @@ const surveyRoutes = new Elysia({ prefix : '/surveys'})
         }
         searchSurvey = status_helper.matchSurveyStatus(searchSurvey,masterStatus);
         return searchSurvey;
+    },{
+        detail : {
+            summary : "Get survey by creator id",
+            description : "Get request to get survey by creator id."
+        }
     })
 export default surveyRoutes;

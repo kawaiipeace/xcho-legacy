@@ -3,7 +3,12 @@ import { assignees } from "../../db-models/assignees";
 import { createAssigneeRequest } from "../../models/create_assignee_request";
 import { randomUUID } from "crypto";
 
-const assigneeRoutes = new Elysia({ prefix : '/assignees'})
+const assigneeRoutes = new Elysia({ 
+    prefix : '/assignees',
+    detail : {
+        tags: ['assignee']
+    }
+})
     .post('/create-assignee',async ({body}:{body:createAssigneeRequest})=>{
         const nowUtc = new Date();
         const nowThai = new Date(nowUtc.getTime() + 7*60*60*1000);
@@ -17,6 +22,12 @@ const assigneeRoutes = new Elysia({ prefix : '/assignees'})
             update_at : nowThai
         });
         return  JSON.stringify(newAssignee);
+    },
+    {
+        detail : {
+            summary : 'Create assignee',
+            description : 'A POST request use to create assignee for survey.'
+        }
     })
     .post('/update-assignee', async ({body}:{body:createAssigneeRequest}) =>{
         const nowUtc = new Date();
@@ -47,6 +58,12 @@ const assigneeRoutes = new Elysia({ prefix : '/assignees'})
         }
         return newAssignee;
         
+    },
+    {
+        detail : {
+            summary : 'Update assignee',
+            description : 'A POST request use to update assignee for survey.'
+        }
     })
     .get('/get-assignee-by-survey-id', async (req) =>{
         const surveyId = req.query.survey_id;
@@ -57,6 +74,12 @@ const assigneeRoutes = new Elysia({ prefix : '/assignees'})
             }
         })
         return searchAssignee;
+    },
+    {
+        detail : {
+            summary : 'Get assignee by survey id',
+            description : 'A GET request use to get assignee by survey id.'
+        }
     })
     .get('/get-assignee-by-assignee-id', async (req) =>{
         const assigneeId = req.query.assignee_id;
@@ -67,6 +90,12 @@ const assigneeRoutes = new Elysia({ prefix : '/assignees'})
             }
         })
         return searchAssignee;
+    },
+    {
+        detail : {
+            summary : "Get user assigned survey.",
+            description : "Get request to get survey id that user has been assigned."
+        }
     })
 
 export default assigneeRoutes;

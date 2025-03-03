@@ -3,7 +3,12 @@ import { mock_user_data } from "../../db-models/mock_user_data";
 import { master_department } from "../../db-models/master_department";
 import { Op } from "sequelize";
 
-const userDataRoutes = new Elysia({ prefix : '/user-data'})
+const userDataRoutes = new Elysia({ 
+    prefix : '/user-data',
+    detail: {
+        tags: ['user-data']
+    }
+})
     .get('/get-user-list-by-dep-code', async (req) =>{
         const dep_code = req.query.dep_code;
         var dept_search = await master_department.findOne({
@@ -109,5 +114,9 @@ const userDataRoutes = new Elysia({ prefix : '/user-data'})
             }
         })
         return searchAssignee;
+    },{
+        detail: {
+            summary : "Get user by department code",
+        }
     })
 export default userDataRoutes;
