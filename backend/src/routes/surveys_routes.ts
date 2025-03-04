@@ -222,7 +222,8 @@ const surveyRoutes = new Elysia({
         const searchSurvey = await survey.findAll({
             where: {
                 id: id
-            }
+            },
+            raw : true,
         })
         if (!searchSurvey) {
             return { message: "Survey not found" }; // Handle case if survey is not found
