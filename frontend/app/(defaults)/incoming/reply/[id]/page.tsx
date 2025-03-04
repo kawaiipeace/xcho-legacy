@@ -8,7 +8,7 @@ async function fetchSurveyContent(id: string) {
   try {
     const response = await fetch(`http://localhost:2501/surveys/get-survey-by-id?id=${id}`);
     const data = await response.json();
-    
+
     if (!data || data.length === 0) {
       return null; // No data found
     }
@@ -37,10 +37,10 @@ export default async function Reply({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <h2 className="text-xl">{t('หน้าจอตอบแบบฟอร์มของ SurveyJS ID ที่')} {params.id}</h2>
-      <h6>EE: {surveyData.survey_title}</h6>
-      {/* Pass the fetched content_survey as a prop */}
-      <SurveyComponent surveyId={params.id} content_survey={surveyData.content_survey} />
+      <div className="panel">
+        <h2 className="text-xl">{t('ตอบแบบฟอร์มหัวข้อ')} {surveyData.survey_title}</h2>
+        <SurveyComponent content_survey={surveyData.content_survey} />
+      </div>
     </>
   );
 }

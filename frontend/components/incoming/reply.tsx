@@ -11,7 +11,7 @@ import moment from 'moment';
 
 moment.locale('th');
 
-export default function Reply({ surveyId, content_survey }: { surveyId: any, content_survey: any }) {
+export default function Reply({ content_survey }: { content_survey: any }) {
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => {
@@ -22,8 +22,7 @@ export default function Reply({ surveyId, content_survey }: { surveyId: any, con
     isDark ? survey.applyTheme(DefaultDark) : survey.applyTheme(DefaultLight);
     // survey.mode = "display"; ไว้ใช้ตอน Answered
     return (
-        <div className="panel mt-6">
-            <h2>Survey ID: {surveyId}</h2>
+        <div className="mt-3">
             <Survey model={survey} />
         </div>
     );
