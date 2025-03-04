@@ -188,6 +188,31 @@ const surveyRoutes = new Elysia({
             creator_id : t.Number(),
         })
     })
+    .get('/get-all-survey', async (req) => {
+        const searchSurvey = await survey.findAll({})
+        return searchSurvey.map(survey => ({
+            id: survey.id,
+            survey_title: survey.survey_title,
+            creator_id: survey.creator_id,
+            publish_date: survey.publish_date?.toISOString() || "",
+            expire_date: survey.expire_date?.toISOString() || "",
+            qr_code: survey.qr_code,
+            short_link: survey.short_link,
+            status: survey.status,
+            approver_id: survey.approver_id || null, // If approver_id is optional
+            is_outsider_allowed: survey.is_outsider_allowed,
+            created_at: survey.created_at?.toISOString() || "",
+            created_by: survey.created_by,
+            update_at: survey.update_at?.toISOString() || "",
+            update_by: survey.update_by,
+            content_survey: survey.content_survey || {},
+        }));
+    },{
+        detail : {
+            summary : "Get all survey",
+            description : "Get request to get all survey."
+        }
+    })
     .get('/get-survey-by-id', async (req) => {
         const id = req.query.id;
         const searchSurvey = await survey.findAll({
@@ -195,7 +220,26 @@ const surveyRoutes = new Elysia({
                 id: id
             }
         })
-        return searchSurvey;
+        if (!searchSurvey) {
+            return { message: "Survey not found" }; // Handle case if survey is not found
+        }
+        return searchSurvey.map(survey => ({
+            id: survey.id,
+            survey_title: survey.survey_title,
+            creator_id: survey.creator_id,
+            publish_date: survey.publish_date?.toISOString() || "",
+            expire_date: survey.expire_date?.toISOString() || "",
+            qr_code: survey.qr_code,
+            short_link: survey.short_link,
+            status: survey.status,
+            approver_id: survey.approver_id || null, // If approver_id is optional
+            is_outsider_allowed: survey.is_outsider_allowed,
+            created_at: survey.created_at?.toISOString() || "",
+            created_by: survey.created_by,
+            update_at: survey.update_at?.toISOString() || "",
+            update_by: survey.update_by,
+            content_survey: survey.content_survey || {},
+        }));
     },{
         detail : {
             summary : "Get survey by survey id",
@@ -253,7 +297,23 @@ const surveyRoutes = new Elysia({
             searchSurvey[i].tel = creator_info.phone;
         }
         searchSurvey = status_helper.matchSurveyStatus(searchSurvey, masterStatus);
-        return searchSurvey;
+        return searchSurvey.map(survey => ({
+            id: survey.id,
+            survey_title: survey.survey_title,
+            creator_id: survey.creator_id,
+            publish_date: survey.publish_date?.toISOString() || "",
+            expire_date: survey.expire_date?.toISOString() || "",
+            qr_code: survey.qr_code,
+            short_link: survey.short_link,
+            status: survey.status,
+            approver_id: survey.approver_id || null, // If approver_id is optional
+            is_outsider_allowed: survey.is_outsider_allowed,
+            created_at: survey.created_at?.toISOString() || "",
+            created_by: survey.created_by,
+            update_at: survey.update_at?.toISOString() || "",
+            update_by: survey.update_by,
+            content_survey: survey.content_survey || {},
+        }));
     },{
         detail : {
             summary : "Get survey by assignee id",
