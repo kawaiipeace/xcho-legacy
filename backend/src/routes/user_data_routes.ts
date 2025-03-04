@@ -2,6 +2,7 @@ import Elysia from "elysia";
 import { mock_user_data } from "../../db-models/mock_user_data";
 import { master_department } from "../../db-models/master_department";
 import { Op } from "sequelize";
+import { t } from "elysia";
 
 const userDataRoutes = new Elysia({ 
     prefix : '/user-data',
@@ -117,6 +118,9 @@ const userDataRoutes = new Elysia({
     },{
         detail: {
             summary : "Get user by department code",
-        }
+        },
+        query : t.Object({
+            dep_code : t.String(({example : "24"}))
+        })
     })
 export default userDataRoutes;
