@@ -8,6 +8,7 @@ import { QueryTypes } from "sequelize";
 import HistoryHelper from "../helper/history_helper";
 import { master_status } from "../../db-models/master_status";
 import StatusHelper from "../helper/status_helper";
+import { t } from "elysia";
 
 const surveyRoutes = new Elysia({ 
     prefix : '/surveys',
@@ -41,7 +42,17 @@ const surveyRoutes = new Elysia({
         detail : {
             summary : "Create survey",
             description : "POST request to create survey."
-        }
+        },
+        body : t.Object({
+            survey_title : t.String(),
+            creator_id : t.Number(),
+            publish_date : t.String({ format: 'date-time'}),
+            expire_date : t.String({ format: 'date-time'}),
+            content_survey : t.String(),
+            qr_code : t.Optional(t.String()),
+            short_link : t.Optional(t.String()),
+            is_outsider_allowed : t.Boolean(),
+        }),
     })
     .post('/update-survey', async ({body}:{body:createSurveyRequest}) =>{
         const nowUtc = new Date();
@@ -108,7 +119,18 @@ const surveyRoutes = new Elysia({
         detail : {
             summary : "Update survey",
             description : "POST request to update survey."
-        }
+        },
+        body : t.Object({
+            id : t.String(),
+            survey_title : t.String(),
+            creator_id : t.Number(),
+            publish_date : t.String({ format: 'date-time'}),
+            expire_date : t.String({ format: 'date-time'}),
+            content_survey : t.String(),
+            qr_code : t.Optional(t.String()),
+            short_link : t.Optional(t.String()),
+            is_outsider_allowed : t.Boolean(),
+        }),
     })
     .post('/update-survey-status',async ({body}:{body:createSurveyRequest}) =>{
         const nowUtc = new Date();
@@ -159,7 +181,12 @@ const surveyRoutes = new Elysia({
         detail : {
             summary : "Update survey status",
             description : "POST request to update survey status."
-        }
+        },
+        body : t.Object({
+            id : t.String(),
+            status : t.Number(),
+            creator_id : t.Number(),
+        })
     })
     .get('/get-survey-by-id', async (req) => {
         const id = req.query.id;
@@ -173,7 +200,10 @@ const surveyRoutes = new Elysia({
         detail : {
             summary : "Get survey by survey id",
             description : "Get request to get survey by survey id."
-        }
+        },
+        query : t.Object({
+            id : t.String({example : '26b64f2a-ec4b-4d05-ac79-62fd92b634bc'})
+        })
     })
     .get('/get-survey-list-by-assignee-id', async (req) => {
         const id = req.query.id;
@@ -228,7 +258,10 @@ const surveyRoutes = new Elysia({
         detail : {
             summary : "Get survey by assignee id",
             description : "Get request to get survey by assignee id and POC of raw query."
-        }
+        },
+        query : t.Object({
+            id : t.String({example : '511879'})
+        })
     })
     .get('/get-survey-list-by-creator-id', async (req) =>{
         const id = req.query.id;
@@ -265,6 +298,9 @@ const surveyRoutes = new Elysia({
         detail : {
             summary : "Get survey by creator id",
             description : "Get request to get survey by creator id."
-        }
+        },
+        query : t.Object({
+            id : t.String({example : '511879'})
+        })
     })
 export default surveyRoutes;
