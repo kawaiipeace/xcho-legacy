@@ -17,6 +17,7 @@ class survey_response
     created_by!: number;
     update_at?: Date;
     update_by!: number;
+    content_survey!: object;
 }
 class creator_info{
     division!: string;

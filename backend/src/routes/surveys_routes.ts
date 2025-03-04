@@ -189,8 +189,28 @@ const surveyRoutes = new Elysia({
         })
     })
     .get('/get-all-survey', async () => {
-        const searchSurvey = await survey.findAll({})
-        return searchSurvey;
+        const searchSurvey = await survey.findAll(
+            {
+                raw:true
+            }
+        )
+        return searchSurvey.map(survey => ({
+            id: survey.id,
+            survey_title: survey.survey_title,
+            creator_id: survey.creator_id,
+            publish_date: survey.publish_date ? survey.publish_date.toISOString() : "", // Ensure date formatting
+            expire_date: survey.expire_date ? survey.expire_date.toISOString() : "", // Ensure date formatting
+            qr_code: survey.qr_code,
+            short_link: survey.short_link,
+            status: survey.status,
+            approver_id: survey.approver_id ?? null, // Handle null or undefined
+            is_outsider_allowed: survey.is_outsider_allowed,
+            created_at: survey.created_at ? survey.created_at.toISOString() : "", // Ensure date formatting
+            created_by: survey.created_by,
+            update_at: survey.update_at ? survey.update_at.toISOString() : "", // Ensure date formatting
+            update_by: survey.update_by,
+            content_survey: survey.content_survey ? survey.content_survey : {}, // Ensure empty object if null
+        }));
     },{
         detail : {
             summary : "Get all survey",
@@ -245,6 +265,7 @@ const surveyRoutes = new Elysia({
         searchSurvey = await sequelize.query(query, {
             replacements: { id },
             type: QueryTypes.SELECT,
+            raw : true,
         });
     
         let resultList: results[] = [];
