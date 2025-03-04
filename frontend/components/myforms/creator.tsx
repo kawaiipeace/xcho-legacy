@@ -126,7 +126,7 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                 padding: '10px 20px',
             });
         }
-        
+
         // 20 = บันทึกและเผยแพร่
         if (type === 20) {
             Swal.fire({
@@ -136,24 +136,36 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                 cancelButtonText: 'ยกเลิก',
                 confirmButtonText: 'ยืนยัน',
                 padding: '2em',
-                customClass: 'sweet-alerts',
+                customClass: {
+                    popup: 'sweet-alerts'
+                },
             }).then((result) => {
                 if (result.value) {
-                    Swal.fire({ 
-                        title: 'บันทึกและเผยแพร่สำเร็จ!', 
+                    Swal.fire({
+                        title: 'บันทึกและเผยแพร่สำเร็จ!',
                         imageUrl: '/assets/images/logo.svg',
                         imageWidth: 224,
                         imageHeight: 'auto',
                         imageAlt: 'QR Code',
-                        text: 'https://xcho.pea.co.th/abcdefg1', 
+                        text: 'https://xcho.pea.co.th/abcdefg1',
                         confirmButtonText: 'กลับสู่หน้าหลัก',
-                        customClass: 'sweet-alerts' });
+                        customClass: {
+                            popup: 'sweet-alerts'
+                        },
+                    });
+                }
+                if (result.value == false) {
+                    Swal.fire({
+                        title: 'อีหยังว่ะ',
+                        text: 'https://xcho.pea.co.th/abcdefg1',
+                        confirmButtonText: 'กลับสู่หน้าหลัก',
+                        customClass: {
+                            popup: 'sweet-alerts'
+                        },
+                    });
                 }
             });
         }
-    }
-
-    const showSavePublishAlert = async (type: number) => {
     }
 
     {/* Select จำนวนหน้า สำหรับใช้ใน Grid View */ }
