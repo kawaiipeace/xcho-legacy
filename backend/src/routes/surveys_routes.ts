@@ -188,25 +188,9 @@ const surveyRoutes = new Elysia({
             creator_id : t.Number(),
         })
     })
-    .get('/get-all-survey', async (req) => {
+    .get('/get-all-survey', async () => {
         const searchSurvey = await survey.findAll({})
-        return searchSurvey.map(survey => ({
-            id: survey.id,
-            survey_title: survey.survey_title,
-            creator_id: survey.creator_id,
-            publish_date: survey.publish_date?.toISOString() || "",
-            expire_date: survey.expire_date?.toISOString() || "",
-            qr_code: survey.qr_code,
-            short_link: survey.short_link,
-            status: survey.status,
-            approver_id: survey.approver_id || null, // If approver_id is optional
-            is_outsider_allowed: survey.is_outsider_allowed,
-            created_at: survey.created_at?.toISOString() || "",
-            created_by: survey.created_by,
-            update_at: survey.update_at?.toISOString() || "",
-            update_by: survey.update_by,
-            content_survey: survey.content_survey || {},
-        }));
+        return searchSurvey;
     },{
         detail : {
             summary : "Get all survey",
