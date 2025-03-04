@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaRegTrashCan, FaQrcode, FaEye, FaUserPlus, FaWpforms, FaRegShareFromSquare, FaLocationCrosshairs, FaXmark, FaCircleInfo } from "react-icons/fa6";
 import { IRootState } from '@/store';
 import { IoDuplicateSharp } from "react-icons/io5";
-import { MdMoreHoriz, MdDashboard, MdDeleteForever, MdHelpOutline, MdHelp, MdManageAccounts, MdOutlineClose } from "react-icons/md";
+import { MdMoreHoriz, MdDashboard, MdDeleteForever, MdHelpOutline, MdHelp, MdManageAccounts, MdOutlineClose, MdSearch } from "react-icons/md";
 import { getTranslation } from '@/i18n';
 import { useContextMenu } from 'mantine-contextmenu';
 import { useMediaQuery, usePagination } from '@mantine/hooks';
@@ -37,6 +37,7 @@ import 'tippy.js/dist/tippy.css';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import { Dialog, Transition } from '@headlessui/react';
+import Swal from 'sweetalert2';
 
 import IconSearch from '@/components/icon/icon-search';
 
@@ -62,6 +63,9 @@ const defaultCreatorOptions: ICreatorOptions = {
     showJSONEditorTab: false,
     showThemeTab: true
 };
+
+const end_publish_default = moment().add(30, 'days').startOf('day').toDate();
+
 
 export default function Creator(props: { json?: Object, options?: ICreatorOptions }) {
     const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
@@ -96,14 +100,61 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
     const { t, i18n } = getTranslation();
     const dispatch = useDispatch();
     const [start_publish, set_start_publish] = useState<any>('today');
-    const [end_publish, set_end_publish] = useState<any>('today');
+    const [end_publish, set_end_publish] = useState<any>(end_publish_default);
     const [isAlertVisible, setIsAlertVisible] = useState(true);
     const [TypePublishModel, setTypePublishModel] = useState(false);
     const [AddManageModal, setAddManageModal] = useState(false);
+    const [AddTargetModal, setAddTargetModal] = useState(false);
+    const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
 
     const handleCloseAlert = () => {
         setIsAlertVisible(false);
     };
+
+    const showSweetAlert = async (type: number) => {
+        // 10 = บันทึกร่าง
+        if (type === 10) {
+            const toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            toast.fire({
+                icon: 'success',
+                html: '<p> บันทึกร่างเรียบร้อย</p>',
+                padding: '10px 20px',
+            });
+        }
+        
+        // 20 = บันทึกและเผยแพร่
+        if (type === 20) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'บันทึกและเผยแพร่แบบฟอร์มหรือไม่?',
+                showCancelButton: true,
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonText: 'ยืนยัน',
+                padding: '2em',
+                customClass: 'sweet-alerts',
+            }).then((result) => {
+                if (result.value) {
+                    Swal.fire({ 
+                        title: 'บันทึกและเผยแพร่สำเร็จ!', 
+                        imageUrl: '/assets/images/logo.svg',
+                        imageWidth: 224,
+                        imageHeight: 'auto',
+                        imageAlt: 'QR Code',
+                        text: 'https://xcho.pea.co.th/abcdefg1', 
+                        confirmButtonText: 'กลับสู่หน้าหลัก',
+                        customClass: 'sweet-alerts' });
+                }
+            });
+        }
+    }
+
+    const showSavePublishAlert = async (type: number) => {
+    }
 
     {/* Select จำนวนหน้า สำหรับใช้ใน Grid View */ }
     const pageSize_select = [
@@ -512,14 +563,17 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                                                             </div>
                                                                         </div>
                                                                         <form>
-                                                                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                                                                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-5">
                                                                                 <input type="text" placeholder="รหัสพนักงานหรือชื่อ" className="form-input lg:col-span-2" />
                                                                                 <input type="text" placeholder="ตำแหน่ง" className="form-input" />
                                                                                 <input type="text" placeholder="สังกัด" className="form-input" />
                                                                             </div>
-                                                                            <button type="button" className="flex btn btn-primary mt-6 justify-center items-cente">
-                                                                                ค้นหา
-                                                                            </button>
+                                                                            <div className="flex justify-center item-center">
+                                                                                <button type="button" className="btn btn-primary">
+                                                                                    <MdSearch className="w-4 h-4 mr-1" />
+                                                                                    {t('ค้นหา')}
+                                                                                </button>
+                                                                            </div>
                                                                         </form>
                                                                     </div>
 
@@ -528,14 +582,6 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                                                         <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
                                                                             <div className="flex flex-wrap items-center">
                                                                                 <h2 className="text-xl">{t('รายการข้อมูล')}</h2>
-                                                                            </div>
-                                                                            <div className='flex flex-wrap items-end'>
-                                                                                <div className="relative">
-                                                                                    <input type="text" className="peer form-input w-auto m-1 p-2 ltr:pr-11 rtl:pl-11" placeholder="ค้นหา..." value={search} onChange={(e) => setSearch(e.target.value)} />
-                                                                                    <button type="button" className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
-                                                                                        <IconSearch className="mx-auto" />
-                                                                                    </button>
-                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                         <div className="datatables">
@@ -547,6 +593,8 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                                                                 className="table-hover whitespace-nowrap"
                                                                                 textSelectionDisabled={isTouch}
                                                                                 records={recordsData}
+                                                                                selectedRecords={selectedRecords}
+                                                                                onSelectedRecordsChange={setSelectedRecords}
                                                                                 onRowContextMenu={({ event }) =>
                                                                                     showContextMenu([])(event)}
                                                                                 columns={[
@@ -554,24 +602,11 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                                                                     { accessor: 'Target_Name', title: 'ชื่อ-นามสกุล', sortable: true },
                                                                                     { accessor: 'Target_Position', title: 'ตำแหน่ง', sortable: true },
                                                                                     { accessor: 'Target_Sector', title: 'สังกัด', sortable: true },
-                                                                                    {
-                                                                                        accessor: 'Action',
-                                                                                        title: 'ดำเนินการ',
-                                                                                        titleClassName: '!text-center',
-                                                                                        render: ({ id, Status }) => (
-                                                                                            <div>
-                                                                                                {actionStatusList(id, Status)}
-                                                                                            </div>
-                                                                                        ),
-                                                                                    },
                                                                                 ]}
                                                                                 totalRecords={initialRecords.length}
                                                                                 recordsPerPage={pageSize}
-                                                                                recordsPerPageLabel={`จำนวนรายการต่อหน้า`}
                                                                                 page={page}
                                                                                 onPageChange={(p) => setPage(p)}
-                                                                                recordsPerPageOptions={PAGE_SIZES}
-                                                                                onRecordsPerPageChange={setPageSize}
                                                                                 sortStatus={sortStatus}
                                                                                 onSortStatusChange={setSortStatus}
                                                                                 minHeight={200}
@@ -779,14 +814,120 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                                             </div>
 
                                                             <div className='flex flex-wrap items-end'>
-                                                                <Link href={"#"} >
-                                                                    <button type="button" className="btn btn-primary m-1 p-2">
-                                                                        <span>
-                                                                            <FaUserPlus className="h-5 w-5 ltr:mr-1 rtl:ml-1" />
-                                                                        </span>
-                                                                        &nbsp;{t('เพิ่มเป้าหมาย')}
-                                                                    </button>
-                                                                </Link>
+                                                                <button type="button" onClick={() => setAddTargetModal(true)} className="btn btn-primary m-1 p-2">
+                                                                    <span>
+                                                                        <FaUserPlus className="h-5 w-5 ltr:mr-1 rtl:ml-1" />
+                                                                    </span>
+                                                                    &nbsp;{t('เพิ่มเป้าหมาย')}
+                                                                </button>
+                                                                <Transition appear show={AddTargetModal} as={Fragment}>
+                                                                    <Dialog as="div" open={AddTargetModal} onClose={() => setAddTargetModal(true)}>
+                                                                        <Transition.Child
+                                                                            as={Fragment}
+                                                                            enter="ease-out duration-300"
+                                                                            enterFrom="opacity-0"
+                                                                            enterTo="opacity-100"
+                                                                            leave="ease-in duration-200"
+                                                                            leaveFrom="opacity-100"
+                                                                            leaveTo="opacity-0"
+                                                                        >
+                                                                            <div className="fixed inset-0" />
+                                                                        </Transition.Child>
+                                                                        <div className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                                                                            <div className="flex items-start justify-center min-h-screen px-4">
+                                                                                <Transition.Child
+                                                                                    as={Fragment}
+                                                                                    enter="ease-out duration-300"
+                                                                                    enterFrom="opacity-0 scale-95"
+                                                                                    enterTo="opacity-100 scale-100"
+                                                                                    leave="ease-in duration-200"
+                                                                                    leaveFrom="opacity-100 scale-100"
+                                                                                    leaveTo="opacity-0 scale-95"
+                                                                                >
+                                                                                    <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark">
+                                                                                        <div className="flex bg-[#fbfbfb] dark:bg-[#121c2c] items-center justify-between px-5 py-3">
+                                                                                            <h5 className="font-bold text-lg">เพิ่มเป้าหมาย</h5>
+                                                                                            <button onClick={() => setAddTargetModal(false)} type="button" className="text-white-dark hover:text-dark">
+                                                                                                <MdOutlineClose />
+                                                                                            </button>
+                                                                                        </div>
+                                                                                        <div className="p-5">
+                                                                                            {/* Panel ค้นหาพนักงานผู้จัดการ */}
+                                                                                            <div className="panel">
+                                                                                                <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
+                                                                                                    <div className="flex items-center">
+                                                                                                        <h2 className="text-xl">{t('ค้นหาชื่อพนักงาน')}</h2>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <form>
+                                                                                                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-5">
+                                                                                                        <input type="text" placeholder="รหัสพนักงานหรือชื่อ" className="form-input lg:col-span-2" />
+                                                                                                        <input type="text" placeholder="ตำแหน่ง" className="form-input" />
+                                                                                                        <input type="text" placeholder="สังกัด" className="form-input" />
+                                                                                                    </div>
+                                                                                                    <div className="flex justify-center item-center">
+                                                                                                        <button type="button" className="btn btn-primary">
+                                                                                                            <MdSearch className="w-4 h-4 mr-1" />
+                                                                                                            {t('ค้นหา')}
+                                                                                                        </button>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+
+                                                                                            {/* Panel รายชื่อเตรียมเพิ่ม */}
+                                                                                            <div className="panel mt-5">
+                                                                                                <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
+                                                                                                    <div className="flex flex-wrap items-center">
+                                                                                                        <h2 className="text-xl">{t('รายการข้อมูล')}</h2>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div className="datatables">
+                                                                                                    <DataTable
+                                                                                                        tableRef={tableRef}
+                                                                                                        highlightOnHover
+                                                                                                        striped
+                                                                                                        noRecordsText="ไม่พบข้อมูล"
+                                                                                                        className="table-hover whitespace-nowrap"
+                                                                                                        textSelectionDisabled={isTouch}
+                                                                                                        records={recordsData}
+                                                                                                        selectedRecords={selectedRecords}
+                                                                                                        onSelectedRecordsChange={setSelectedRecords}
+                                                                                                        onRowContextMenu={({ event }) =>
+                                                                                                            showContextMenu([])(event)}
+                                                                                                        columns={[
+                                                                                                            { accessor: 'Target_ID', title: 'รหัสพนักงาน', sortable: true },
+                                                                                                            { accessor: 'Target_Name', title: 'ชื่อ-นามสกุล', sortable: true },
+                                                                                                            { accessor: 'Target_Position', title: 'ตำแหน่ง', sortable: true },
+                                                                                                            { accessor: 'Target_Sector', title: 'สังกัด', sortable: true },
+                                                                                                        ]}
+                                                                                                        totalRecords={initialRecords.length}
+                                                                                                        recordsPerPage={pageSize}
+                                                                                                        page={page}
+                                                                                                        onPageChange={(p) => setPage(p)}
+                                                                                                        sortStatus={sortStatus}
+                                                                                                        onSortStatusChange={setSortStatus}
+                                                                                                        minHeight={200}
+                                                                                                        paginationText={({ from, to, totalRecords }) => `แสดงจาก  ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`}
+                                                                                                        paginationActiveBackgroundColor="grape"
+                                                                                                        loadingText="กำลังโหลด ใจเย็น ๆ..."
+                                                                                                    />
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div className="flex justify-center items-center mt-8">
+                                                                                                <button onClick={() => setAddTargetModal(false)} type="button" className="btn btn-outline-danger">
+                                                                                                    ยกเลิก
+                                                                                                </button>
+                                                                                                <button onClick={() => setAddTargetModal(false)} type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4">
+                                                                                                    เพิ่มรายการ
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </Dialog.Panel>
+                                                                                </Transition.Child>
+                                                                            </div>
+                                                                        </div>
+                                                                    </Dialog>
+                                                                </Transition>
 
                                                                 <div className="relative">
                                                                     <input type="text" className="peer form-input w-auto m-1 p-2 ltr:pr-11 rtl:pl-11" placeholder="ค้นหา..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -861,10 +1002,10 @@ export default function Creator(props: { json?: Object, options?: ICreatorOption
                                             )}
                                         </div>
                                         <div className="flex flex-wrap">
-                                            <button type="button" className="btn btn-primary mr-3">
+                                            <button type="button" className="btn btn-primary mr-3" onClick={() => showSweetAlert(20)}>
                                                 {t('บันทึกและเผยแพร่ทันที')}
                                             </button>
-                                            <button type="button" className="btn btn-info">
+                                            <button type="button" className="btn btn-info" onClick={() => showSweetAlert(10)}>
                                                 {t('บันทึกร่าง')}
                                             </button>
                                         </div>
