@@ -37,7 +37,7 @@ import { CreateSurvey, fetchSurveysByAssigneeId } from '@/service/surveyService'
 
 moment.locale('th');
 const rowData = survey_record;
-const col = ['id', 'Survey_Title', 'Sector_Creator', 'Tel', 'Expire_Date', 'Status'];
+const col = ['id', 'survey_title', 'Sector_Creator', 'Tel', 'Expire_Date', 'status'];
 const model = new Model(survey_json);
 
 function savePDF(model: Model) {
@@ -67,6 +67,7 @@ const Lists = () => {
     const { t, i18n } = getTranslation();
 
     const getSurveys = async () => {
+        {/*
         try {
             const testPostRequest = new CreateSurveyRequest();
             testPostRequest.survey_title = 'test post from next';
@@ -84,6 +85,15 @@ const Lists = () => {
             //await CreateSurveyeSurvey(testPostRequest);
         } catch (error) {
             console.error(error);
+        }
+        */}
+        try {
+            const response = await fetch('http://localhost:2501/surveys/get-survey-list-by-assignee-id?id=42'); // Replace with your API endpoint
+            const data = await response.json();
+            setRowData(data);
+            setInitialRecords(sortBy(data, 'id'));
+        } catch (error) {
+            console.error('Error fetching survey data:', error);
         }
     };
 
@@ -109,25 +119,29 @@ const Lists = () => {
         },
     });
 
-    const colorBadgeStatus = (Status: unknown) => {
-        if (typeof Status === 'string') {
-            if (Status === 'ยังไม่ตอบ') {
+    const colorBadgeStatus = (status: unknown) => {
+        if (typeof status === 'number') {
+            // ยังไม่ตอบ
+            if (status === 30) {
                 return 'info';
-            } else if (Status === 'ตอบแล้ว') {
+            // ตอบแล้ว
+            } else if (status === 20) {
                 return 'success';
-            } else if (Status === 'สิ้นสุดแล้ว') {
+            // สิ้นสุดแล้ว
+            } else if (status === 33) {
                 return 'danger';
             }
         }
         return '';
     };
 
-    const showStatus = (Status: any) => {
-        return Status;
+    const showStatus = (status: any) => {
+        return status;
     }
 
-    const actionStatusList = (id: any, Status: any) => {
-        if (Status === 'ยังไม่ตอบ') {
+    const actionStatusList = (id: any, status: any) => {
+        // ยังไม่ตอบ
+        if (status === 30) {
             return <div className="mx-auto flex w-max items-center gap-2">
                 <Tippy trigger="mouseenter focus" content='ตอบแบบฟอร์ม'>
                     <button type="button" data-trigger="mouseenter" className="btn btn-outline-primary w-8 h-8 p-0 rounded-full">
@@ -137,7 +151,7 @@ const Lists = () => {
                     </button>
                 </Tippy>
             </div>;
-        } else if (Status === 'ตอบแล้ว') {
+        } else if (status === 'ตอบแล้ว') {
             return <div className="mx-auto flex w-max items-center gap-2">
                 <Tippy trigger="mouseenter focus" content='ดูคำตอบ'>
                     <button type="button" data-trigger="mouseenter" className="btn btn-outline-success w-8 h-8 p-0 rounded-full">
@@ -152,7 +166,7 @@ const Lists = () => {
                     </button>
                 </Tippy>
             </div>;
-        } else if (Status === 'สิ้นสุดแล้ว') {
+        } else if (status === 'สิ้นสุดแล้ว') {
             return <div className="mx-auto flex w-max items-center gap-2">
                 <Tippy trigger="mouseenter focus" content='คุณตอบไม่ทัน เสียใจด้วย'>
                     <button type="button" data-trigger="mouseenter" className="btn btn-outline-danger w-8 h-8 p-0 rounded-full">
@@ -164,8 +178,9 @@ const Lists = () => {
         return '';
     };
 
-    const actionStatusGrid = (id: any, Status: any) => {
-        if (Status === 'ยังไม่ตอบ') {
+    const actionStatusGrid = (id: any, status: any) => {
+        // ยังไม่ตอบ
+        if (status === 30) {
             return <div className="mx-auto flex w-max items-center gap-2">
                 {/* ปุ่มตอบแบบฟอร์ม */}
                 <Link href={"/incoming/reply/" + id}>
@@ -197,7 +212,7 @@ const Lists = () => {
                     </div>
                 </Link>
             </div>;
-        } else if (Status === 'ตอบแล้ว') {
+        } else if (status === 'ตอบแล้ว') {
             return <div className="mx-auto flex w-max items-center gap-2">
                 {/* ปุ่มดูคำตอบ */}
                 <Link href={"/incoming/answered/" + id}>
@@ -256,7 +271,7 @@ const Lists = () => {
                     </div>
                 </div>
             </div>;
-        } else if (Status === 'สิ้นสุดแล้ว') {
+        } else if (status === 'สิ้นสุดแล้ว') {
             return <div className="mx-auto flex w-max items-center gap-2">
                 {/* ข้อความเสียใจ */}
                 <div className="group relative flex justify-center items-center text-pink-50 text-sm font-bold">
@@ -310,11 +325,11 @@ const Lists = () => {
             return rowData.filter((item: any) => {
                 return (
                     // item.id.toString().includes(search.toLowerCase()) ||
-                    item.Survey_Title.toLowerCase().includes(search.toLowerCase()) ||
+                    item.survey_title.toLowerCase().includes(search.toLowerCase()) ||
                     item.Sector_Creator.toLowerCase().includes(search.toLowerCase()) ||
                     item.Tel.toString().toLowerCase().includes(search.toLowerCase()) ||
                     item.Expire_Date.toLowerCase().includes(search.toLowerCase()) ||
-                    item.Status.toString().toLowerCase().includes(search.toLowerCase())
+                    item.status.toString().toLowerCase().includes(search.toLowerCase())
                 );
             });
         });
@@ -575,7 +590,7 @@ const Lists = () => {
                             onRowContextMenu={({ event }) =>
                                 showContextMenu([])(event)}
                             columns={[
-                                { accessor: 'Survey_Title', title: 'ชื่อหัวข้อ', sortable: true },
+                                { accessor: 'survey_title', title: 'ชื่อหัวข้อ', sortable: true },
                                 { accessor: 'Sector_Creator', title: 'หน่วยงานผู้สร้าง', sortable: true },
                                 { accessor: 'Tel', title: 'เบอร์โทรศัพท์', sortable: true },
                                 {
@@ -585,18 +600,18 @@ const Lists = () => {
                                     render: ({ Expire_Date }) => <div>{formatDate(Expire_Date)}</div>,
                                 },
                                 {
-                                    accessor: 'Status',
+                                    accessor: 'status',
                                     title: 'สถานะ',
                                     sortable: true,
-                                    render: ({ Status }) => <span className={`badge bg-outline-${colorBadgeStatus(Status)}/10 rounded-full text-${colorBadgeStatus(Status)} py-1.5 dark:bg-${colorBadgeStatus(Status)} rounded-full dark:text-white !important`}>{showStatus(Status)}</span>,
+                                    render: ({ status }) => <span className={`badge bg-outline-${colorBadgeStatus(status)}/10 rounded-full text-${colorBadgeStatus(status)} py-1.5 dark:bg-${colorBadgeStatus(status)} rounded-full dark:text-white !important`}>{showStatus(status)}</span>,
                                 },
                                 {
                                     accessor: 'Action',
                                     title: 'ดำเนินการ',
                                     titleClassName: '!text-center',
-                                    render: ({ id, Status }) => (
+                                    render: ({ id, status }) => (
                                         <div>
-                                            {actionStatusList(id, Status)}
+                                            {actionStatusList(id, status)}
                                         </div>
                                     ),
                                 },
