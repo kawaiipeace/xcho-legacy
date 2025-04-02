@@ -70,7 +70,8 @@ const surveyRoutes = new Elysia({
         let newSurvey = await survey.findOne({
             where : {
                 id : body.id
-            }
+            },
+            raw : true
         });
         if ((Object.keys(updateData).length > 1)&&(newSurvey)){
             if(newSurvey){
@@ -225,9 +226,6 @@ const surveyRoutes = new Elysia({
             },
             raw : true,
         })
-        if (!searchSurvey) {
-            return { message: "Survey not found" }; // Handle case if survey is not found
-        }
         return searchSurvey.map(survey => ({
             id: survey.id,
             survey_title: survey.survey_title,
@@ -252,7 +250,26 @@ const surveyRoutes = new Elysia({
         },
         query : t.Object({
             id : t.String({example : '26b64f2a-ec4b-4d05-ac79-62fd92b634bc'})
-        })
+        }),
+        response: {
+            200: t.Array(t.Object({
+                id: t.String(),
+                survey_title: t.String(),
+                creator_id: t.Number(),
+                publish_date: t.Optional(t.String({ format: "date-time" })),
+                expire_date: t.Optional(t.String({ format: "date-time" })),
+                qr_code: t.String(),
+                short_link: t.String(),
+                status: t.Number(),
+                approver_id: t.Union([t.Number(), t.Null()]), // Correctly specify null or number using t.Union
+                is_outsider_allowed: t.Boolean(),
+                created_at: t.Optional(t.String({ format: "date-time" })),
+                created_by: t.Number(),
+                update_at: t.Optional(t.String({ format: "date-time" })),
+                update_by: t.Number(),
+                content_survey: t.Optional(t.Object({}))
+            }))
+        }
     })
     .get('/get-survey-list-by-assignee-id', async (req) => {
         const id = req.query.id;
@@ -327,7 +344,26 @@ const surveyRoutes = new Elysia({
         },
         query : t.Object({
             id : t.String({example : '511879'})
-        })
+        }),
+        response: {
+            200: t.Array(t.Object({
+                id: t.String(),
+                survey_title: t.String(),
+                creator_id: t.Number(),
+                publish_date: t.Optional(t.String({ format: "date-time" })),
+                expire_date: t.Optional(t.String({ format: "date-time" })),
+                qr_code: t.String(),
+                short_link: t.String(),
+                status: t.Number(),
+                approver_id: t.Union([t.Number(), t.Null()]), // Correctly specify null or number using t.Union
+                is_outsider_allowed: t.Boolean(),
+                created_at: t.Optional(t.String({ format: "date-time" })),
+                created_by: t.Number(),
+                update_at: t.Optional(t.String({ format: "date-time" })),
+                update_by: t.Number(),
+                content_survey: t.Optional(t.Object({}))
+            }))
+        }
     })
     .get('/get-survey-list-by-creator-id', async (req) =>{
         const id = req.query.id;
@@ -359,7 +395,23 @@ const surveyRoutes = new Elysia({
             searchSurvey[i].tel = creator_info.phone;
         }
         searchSurvey = status_helper.matchSurveyStatus(searchSurvey,masterStatus);
-        return searchSurvey;
+        return searchSurvey.map(survey => ({
+            id: survey.id,
+            survey_title: survey.survey_title,
+            creator_id: survey.creator_id,
+            publish_date: survey.publish_date?.toISOString() || "",
+            expire_date: survey.expire_date?.toISOString() || "",
+            qr_code: survey.qr_code,
+            short_link: survey.short_link,
+            status: survey.status,
+            approver_id: survey.approver_id || null, // If approver_id is optional
+            is_outsider_allowed: survey.is_outsider_allowed,
+            created_at: survey.created_at?.toISOString() || "",
+            created_by: survey.created_by,
+            update_at: survey.update_at?.toISOString() || "",
+            update_by: survey.update_by,
+            content_survey: survey.content_survey || {},
+        }));
     },{
         detail : {
             summary : "Get survey by creator id",
@@ -367,6 +419,25 @@ const surveyRoutes = new Elysia({
         },
         query : t.Object({
             id : t.String({example : '511879'})
-        })
+        }),
+        response: {
+            200: t.Array(t.Object({
+                id: t.String(),
+                survey_title: t.String(),
+                creator_id: t.Number(),
+                publish_date: t.Optional(t.String({ format: "date-time" })),
+                expire_date: t.Optional(t.String({ format: "date-time" })),
+                qr_code: t.String(),
+                short_link: t.String(),
+                status: t.Number(),
+                approver_id: t.Union([t.Number(), t.Null()]), // Correctly specify null or number using t.Union
+                is_outsider_allowed: t.Boolean(),
+                created_at: t.Optional(t.String({ format: "date-time" })),
+                created_by: t.Number(),
+                update_at: t.Optional(t.String({ format: "date-time" })),
+                update_by: t.Number(),
+                content_survey: t.Optional(t.Object({}))
+            }))
+        }
     })
 export default surveyRoutes;

@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia';
+import { Elysia, t } from 'elysia';
 import { master_status }from '../../db-models/master_status';
 
 const statusRoutes = new Elysia({ 
@@ -8,13 +8,23 @@ const statusRoutes = new Elysia({
     }
 })
     .get("/all-status", async () => {
-        const statuses = await master_status.findAll();
-        return statuses;
+        const statuses = await master_status.findAll({raw : true});
+        return statuses.map(status => ({
+            status_id: status.status_id,
+            status_detail: status.status_detail || "",
+        }));
+        
     },
     {
         detail : {
             summary : "Get all meter status",
             description : "Get request to get all status of survey and assignment to use as master data."
+        },
+        response : {
+            200 : t.Array(t.Object({
+                status_id: t.Number(),
+                status_detail: t.String(),
+            }))
         }
     })
     .post("/create-status",async ({body}:{body:master_status}) => {

@@ -6,5 +6,5 @@ export interface createResultRequest{
     respondent_id: number;
     personal_id: string;
     status: number;
-    content_result: Json;
+    content_result: string;
 }

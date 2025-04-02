@@ -82,7 +82,8 @@ const assigneeRoutes = new Elysia({
             newAssignee = await assignees.findOne({
                 where : {
                     id : body.id
-                }
+                },
+                raw : true
             });
         }
         if (newAssignee) {
@@ -113,13 +114,13 @@ const assigneeRoutes = new Elysia({
         }),
         response: {
             200: t.Object({
-            id: t.String(),
-            survey_id: t.String(),
-            assignee_id: t.Number(),
-            created_by: t.Number(),
-            update_by: t.Number(),
-            created_at: t.String({ format: "date-time" }), // ✅ Expected as String
-            update_at: t.String({ format: "date-time" }), // ✅ Expected as String
+                id: t.String(),
+                survey_id: t.String(),
+                assignee_id: t.Number(),
+                created_by: t.Number(),
+                update_by: t.Number(),
+                created_at: t.String({ format: "date-time" }), // ✅ Expected as String
+                update_at: t.String({ format: "date-time" }), // ✅ Expected as String
             }),
         },
     })
@@ -129,9 +130,18 @@ const assigneeRoutes = new Elysia({
         searchAssignee = await assignees.findAll({
             where:{
                 survey_id : surveyId
-            }
+            },
+            raw : true
         })
-        return searchAssignee;
+        return searchAssignee.map(assignee => ({
+            id: assignee.id,
+            survey_id: assignee.survey_id,
+            assignee_id: assignee.assignee_id,
+            created_by: assignee.created_by,
+            update_by: assignee.update_by,
+            created_at: assignee.created_at?.toISOString() || "",
+            update_at: assignee.update_at?.toISOString() || "",
+        }));
     },
     {
         detail : {
@@ -140,7 +150,18 @@ const assigneeRoutes = new Elysia({
         },
         query : t.Object({
             survey_id : t.String({example : '26b64f2a-ec4b-4d05-ac79-62fd92b634bc'})
-        })
+        }),
+        response : {
+            200 : t.Array(t.Object({
+                id: t.String(),
+                survey_id: t.String(),
+                assignee_id: t.Number(),
+                created_by: t.Number(),
+                update_by: t.Number(),
+                created_at: t.String({ format: "date-time" }), // ✅ Expected as String
+                update_at: t.String({ format: "date-time" }), // ✅ Expected as String
+            }))
+        }
     })
     .get('/get-assignee-by-assignee-id', async (req) =>{
         const assigneeId = req.query.assignee_id;
@@ -148,9 +169,18 @@ const assigneeRoutes = new Elysia({
         searchAssignee = await assignees.findAll({
             where:{
                 assignee_id : assigneeId
-            }
+            },
+            raw : true,
         })
-        return searchAssignee;
+        return searchAssignee.map(assignee => ({
+            id: assignee.id,
+            survey_id: assignee.survey_id,
+            assignee_id: assignee.assignee_id,
+            created_by: assignee.created_by,
+            update_by: assignee.update_by,
+            created_at: assignee.created_at?.toISOString() || "",
+            update_at: assignee.update_at?.toISOString() || "",
+        }));
     },
     {
         detail : {
@@ -159,7 +189,18 @@ const assigneeRoutes = new Elysia({
         },
         query : t.Object({
             assignee_id : t.String({example : '511879'})
-        })
+        }),
+        response : {
+            200 : t.Array(t.Object({
+                id: t.String(),
+                survey_id: t.String(),
+                assignee_id: t.Number(),
+                created_by: t.Number(),
+                update_by: t.Number(),
+                created_at: t.String({ format: "date-time" }), // ✅ Expected as String
+                update_at: t.String({ format: "date-time" }), // ✅ Expected as String
+            }))
+        }
     })
 
 export default assigneeRoutes;
