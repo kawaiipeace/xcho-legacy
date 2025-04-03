@@ -21,4 +21,4 @@ EXPOSE 2501
 ENV NODE_ENV=production
 
 # Start the Elysia.js server
-CMD ["bun", "run", "src/index.ts"]
+CMD ["bun", "run", "--watch", "src/index.ts"]

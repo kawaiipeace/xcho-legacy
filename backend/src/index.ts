@@ -36,7 +36,7 @@ const app = new Elysia()
 .use(departmentRoutes)
 .use(userDataRoutes)
 .use(swagger()) // Enable Swagger UI
-.listen(2501);
+.listen(2501)
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
