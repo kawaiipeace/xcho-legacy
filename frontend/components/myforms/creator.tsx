@@ -21,7 +21,7 @@ import 'mantine-datatable/styles.layer.css';
 import 'mantine-contextmenu/styles.layer.css';
 import 'moment/locale/th';
 import 'tippy.js/dist/tippy.css';
-import 'survey-core/defaultV2.css'
+// import 'survey-core/defaultV2.css'
 import "survey-creator-core/survey-creator-core.css";
 import IconHome from '@/components/icon/icon-home';
 import IconPhone from '@/components/icon/icon-phone';
@@ -38,6 +38,7 @@ import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import { Dialog, Transition } from '@headlessui/react';
 import Swal from 'sweetalert2';
+import 'survey-core/survey-core.css';
 
 import IconSearch from '@/components/icon/icon-search';
 
