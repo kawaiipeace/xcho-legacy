@@ -1,4 +1,4 @@
-# XCHO - Form Builder
+# XCHO - Form Builder (Legacy Edition)
 
 ## ระบบจัดการแบบฟอร์ม (XCHO) 
 
